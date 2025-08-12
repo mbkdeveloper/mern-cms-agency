@@ -29,7 +29,7 @@ app.use("/api/users", userRouter);
 app.use("/api/galeries", galerieRouter);
 app.use("/api/services", serviceRouter);
 app.use("/api/testimonials", testimonialRouter);
-app.use("/api/header", headerRouter);
+app.use("/api/headers", headerRouter);
 
 // Health check route
 app.get("/", (req, res) => {

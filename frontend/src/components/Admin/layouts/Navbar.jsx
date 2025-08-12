@@ -23,7 +23,7 @@ const Navbar = () => {
   // ✅ Fonction logout appelée depuis StoreContext
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate("/");
   };
   return (
     <header
@@ -49,15 +49,7 @@ const Navbar = () => {
           fontSize: "1.5rem",
         }}
       >
-        <div
-          style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "50%",
-            backgroundColor: "rgba(0,0,0,0.1)",
-          }}
-        />
-        My Dashboard
+        Admin Dashboard
       </div>
       <div style={{ position: "relative" }} ref={dropdownRef}>
         <button

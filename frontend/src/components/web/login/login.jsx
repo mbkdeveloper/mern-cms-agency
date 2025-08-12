@@ -46,7 +46,7 @@ const Login = () => {
     setError("");
     const result = await loginUser(data, currState === "Login");
     if (result.success) {
-      navigate("/admin", { replace: true });
+      navigate("/admin/profile/me", { replace: true });
     } else {
       setError(result.message || "Login failed");
     }

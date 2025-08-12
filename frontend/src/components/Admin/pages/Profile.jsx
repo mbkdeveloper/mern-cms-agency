@@ -9,11 +9,11 @@ import {
   Alert,
 } from "react-bootstrap";
 import { StoreContext } from "../../store/StoreContext";
-import axios from "axios";
 
 const Profile = () => {
-  const { token, userProfile, setUserProfile, logout, API, API_BASE } =
+  const { userProfile, API_BASE, updateProfile, deleteProfile } =
     useContext(StoreContext);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,6 +23,7 @@ const Profile = () => {
   });
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (userProfile) {
@@ -30,7 +31,7 @@ const Profile = () => {
         name: userProfile.name,
         email: userProfile.email,
         photo: userProfile.photo,
-        password: "",
+        password: userProfile.password,
         confirmPassword: "",
       });
     }
@@ -46,51 +47,19 @@ const Profile = () => {
   };
 
   const handleUpdate = async () => {
-    if (formData.password && formData.password !== formData.confirmPassword) {
-      return setMessage("Passwords do not match.");
-    }
-
-    try {
-      const data = new FormData();
-      data.append("name", formData.name);
-      data.append("email", formData.email);
-      if (formData.photo) data.append("photo", formData.photo);
-      if (formData.password) data.append("password", formData.password);
-
-      const res = await axios.put(API.updateProfile, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (res.data.success) {
-        setUserProfile(res.data.user);
-        setEditing(false);
-        setMessage("Profile updated successfully.");
-      }
-    } catch (err) {
-      console.error(err.message);
-      setMessage("Failed to update profile.");
+    const result = await updateProfile(formData);
+    setMessage(result.message);
+    if (result.success) {
+      setEditing(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete your profile?"))
-      return;
-
-    try {
-      const res = await axios.delete(API.deleteProfile, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (res.data.success) {
-        alert("Profile deleted. You have been logged out.");
-        logout();
-      }
-    } catch (err) {
-      console.error(err.message);
-      alert("Failed to delete profile.");
+    const result = await deleteProfile();
+    if (result.success) {
+      alert(result.message);
+    } else {
+      alert(result.message || "Failed to delete profile.");
     }
   };
 
@@ -107,9 +76,13 @@ const Profile = () => {
         <Col md={6}>
           <div className="text-center">
             <Image
-              src={API_BASE + formData.photo}
+              src={
+                formData.photo instanceof File
+                  ? URL.createObjectURL(formData.photo)
+                  : API_BASE + formData.photo
+              }
               roundedCircle
-              alt={API_BASE + formData.photo}
+              alt={formData.name}
               width={150}
               height={150}
             />
@@ -163,12 +136,28 @@ const Profile = () => {
                     Password
                   </Form.Label>
                   <Col sm={9}>
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                    />
+                    <div className="password-wrapper">
+                      <Form.Control
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        onChange={handleChange}
+                        value={formData.password}
+                        placeholder="Your Password"
+                      />
+                      <button
+                        type="button"
+                        className="password-toggle"
+                        aria-label="Toggle password visibility"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                      >
+                        <span
+                          className={`eye-icon ${
+                            showPassword ? "show-password" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
                   </Col>
                 </Form.Group>
 

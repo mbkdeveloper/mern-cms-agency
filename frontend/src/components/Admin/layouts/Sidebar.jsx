@@ -9,6 +9,7 @@ const Sidebar = () => {
     { href: "/admin/header", label: "Header" },
     { href: "/admin/services", label: "Services" },
     { href: "/admin/galerie", label: "Galerie" },
+    { href: "/admin/testimonials", label: "Testimonial" },
     // {
     //   href: "/admin/services",
     //   label: "Services",

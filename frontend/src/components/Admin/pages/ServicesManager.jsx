@@ -20,7 +20,6 @@ const ServicesManager = () => {
     addServiceItem,
     updateServiceItem, // Optional if you add edit item API
     removeServiceItem,
-    listServiceSections,
     API_BASE,
   } = useContext(StoreContext);
 
@@ -79,7 +78,7 @@ const ServicesManager = () => {
     }
     if (success) setShowSectionModal(false);
     
-      await listServiceSections();
+      await fetchServiceSections();
   };
 
   // Delete section
@@ -89,7 +88,7 @@ const ServicesManager = () => {
     ) {
       const id = servicesSections[sectionIdx]._id;
       const success = await removeServiceSection(id);
-      await listServiceSections();
+      await fetchServiceSections();
       if (!success) alert("Failed to delete section");
     }
   };

@@ -7,6 +7,7 @@ import AdminLayout from "./components/Admin/layouts/AdminLayout";
 import Profile from "./components/Admin/pages/Profile";
 import PrivateRoute from "./components/Admin/PrivateRoute";
 import GalerieManager from './components/Admin/pages/GalerieManager';
+import TestimonialsManager from "./components/Admin/pages/TestimonialsManager";
 
 function App() {
   return (
@@ -21,9 +22,10 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="/admin/header" element={<HeaderManager />} />
-              <Route path="/admin/profile/me" element={<Profile />} />"/admin/galerie"
+              <Route path="/admin/profile/me" element={<Profile />} />
               <Route path="/admin/services" element={<ServicesManager />} />
               <Route path="/admin/galerie" element={<GalerieManager />} />
+              <Route path="/admin/testimonials" element={<TestimonialsManager />} />
             </Route>
           </Route>
         </Routes>
