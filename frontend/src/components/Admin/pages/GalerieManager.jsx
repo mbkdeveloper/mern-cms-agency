@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { GalerieContext } from './../../../context/GalerieContext';
 import {
   Table,
   Button,
@@ -8,12 +9,10 @@ import {
   Toast,
   Spinner,
 } from "react-bootstrap";
-import { StoreContext } from "../../store/StoreContext";
-import { API_BASE } from "../../store/api";
 
 const GalerieManager = () => {
-  const { galerie, fetchGalerie, addGalerie, editGalerie, deleteGalerie } =
-    useContext(StoreContext);
+  const { API_BASE, galerie, fetchGalerie, addGalerie, editGalerie, deleteGalerie } =
+    useContext(GalerieContext);
   const [showPreview, setShowPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [loading, setLoading] = useState(true);

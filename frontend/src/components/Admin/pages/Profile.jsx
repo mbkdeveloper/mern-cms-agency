@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from './../../../context/AuthContext';
 import {
   Container,
   Row,
@@ -8,11 +9,10 @@ import {
   Button,
   Alert,
 } from "react-bootstrap";
-import { StoreContext } from "../../store/StoreContext";
 
 const Profile = () => {
   const { userProfile, API_BASE, updateProfile, deleteProfile } =
-    useContext(StoreContext);
+    useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     name: "",

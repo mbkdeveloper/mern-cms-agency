@@ -1,19 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import ServiceBox from "../../Elements/ServiceBox";
-import { StoreContext } from "../../store/StoreContext";
+import { ServiceContext } from "../../../context/ServiceContext";
 
 // import FullButton from "../../Elements/FullButton";
 // import ClientSlider from "../../Elements/ClientSlider";
-// // Assets
-// import AddImage1 from "../../../assets/img/add/1.png";
-// import AddImage2 from "../../../assets/img/add/2.png";
-// import AddImage3 from "../../../assets/img/add/3.png";
-// import AddImage4 from "../../../assets/img/add/4.png";
 
 export default function Services() {
   const { servicesSections, fetchServiceSections, API_BASE } =
-    useContext(StoreContext);
+    useContext(ServiceContext);
   const [, setLoading] = useState(true);
   // Fetch on mount
   useEffect(() => {

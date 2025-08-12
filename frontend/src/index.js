@@ -1,6 +1,6 @@
 import React from "react";
-import StoreContextProvider from "./components/store/StoreContext";
 import ReactDOM from "react-dom/client";
+import AppProviders from './context/AppProviders';
 import App from "./App";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "slick-carousel/slick/slick.css";
@@ -11,8 +11,8 @@ import "./style/index.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-      <StoreContextProvider>
-        <App />
-      </StoreContextProvider>
+    <AppProviders>
+      <App />
+    </AppProviders>
   </React.StrictMode>
 );

@@ -1,7 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Card, Button, ListGroup, Modal, Form, Spinner } from "react-bootstrap";
-import { StoreContext } from "../../store/StoreContext";
-
+import { TestimonialContext } from "../../../context/TestimonialContext";
 
 const TestimonialManager = () => {
   const {
@@ -13,7 +12,7 @@ const TestimonialManager = () => {
     addTestimonialItem,
     updateTestimonialItem,
     removeTestimonialItem,
-  } = useContext(StoreContext);
+  } = useContext(TestimonialContext);
 
   const [loading, setLoading] = useState(true);
   const [editingSection, setEditingSection] = useState(null);
@@ -31,12 +30,13 @@ const TestimonialManager = () => {
   const openSectionModal = (idx = null) => {
     setEditingSection({
       idx,
-      data: idx === null
-        ? { sectionTitle: "", sectionDescription: "" }
-        : {
-            sectionTitle: testimonialsSections[idx].sectionTitle,
-            sectionDescription: testimonialsSections[idx].sectionDescription
-          }
+      data:
+        idx === null
+          ? { sectionTitle: "", sectionDescription: "" }
+          : {
+              sectionTitle: testimonialsSections[idx].sectionTitle,
+              sectionDescription: testimonialsSections[idx].sectionDescription,
+            },
     });
     setShowSectionModal(true);
   };
@@ -44,9 +44,10 @@ const TestimonialManager = () => {
   const saveSection = async () => {
     const { idx, data } = editingSection;
     if (!data.sectionTitle.trim() || !data.sectionDescription.trim()) return;
-    const success = idx === null
-      ? await addTestimonialsSection(data)
-      : await updateTestimonialsSection(testimonialsSections[idx]._id, data);
+    const success =
+      idx === null
+        ? await addTestimonialsSection(data)
+        : await updateTestimonialsSection(testimonialsSections[idx]._id, data);
     if (success) {
       setShowSectionModal(false);
       await fetchTestimonialsSections();
@@ -55,7 +56,9 @@ const TestimonialManager = () => {
 
   const deleteSection = async (idx) => {
     if (!window.confirm("Delete this section?")) return;
-    const success = await removeTestimonialsSection(testimonialsSections[idx]._id);
+    const success = await removeTestimonialsSection(
+      testimonialsSections[idx]._id
+    );
     if (success) await fetchTestimonialsSections();
   };
 
@@ -63,12 +66,16 @@ const TestimonialManager = () => {
     setEditingItem({
       sectionIdx,
       itemIdx,
-      data: itemIdx === null
-        ? { writer: "", paragraph: "" }
-        : {
-            writer: testimonialsSections[sectionIdx].testimonials[itemIdx].writer,
-            paragraph: testimonialsSections[sectionIdx].testimonials[itemIdx].paragraph
-          }
+      data:
+        itemIdx === null
+          ? { writer: "", paragraph: "" }
+          : {
+              writer:
+                testimonialsSections[sectionIdx].testimonials[itemIdx].writer,
+              paragraph:
+                testimonialsSections[sectionIdx].testimonials[itemIdx]
+                  .paragraph,
+            },
     });
     setShowItemModal(true);
   };
@@ -77,9 +84,14 @@ const TestimonialManager = () => {
     const { sectionIdx, itemIdx, data } = editingItem;
     if (!data.writer.trim() || !data.paragraph.trim()) return;
     const sectionId = testimonialsSections[sectionIdx]._id;
-    const success = itemIdx === null
-      ? await addTestimonialItem(sectionId, data)
-      : await updateTestimonialItem(sectionId, testimonialsSections[sectionIdx].testimonials[itemIdx]._id, data);
+    const success =
+      itemIdx === null
+        ? await addTestimonialItem(sectionId, data)
+        : await updateTestimonialItem(
+            sectionId,
+            testimonialsSections[sectionIdx].testimonials[itemIdx]._id,
+            data
+          );
     if (success) {
       setShowItemModal(false);
       await fetchTestimonialsSections();
@@ -95,12 +107,19 @@ const TestimonialManager = () => {
     if (success) await fetchTestimonialsSections();
   };
 
-  if (loading) return <div className="text-center py-5"><Spinner animation="border" /></div>;
+  if (loading)
+    return (
+      <div className="text-center py-5">
+        <Spinner animation="border" />
+      </div>
+    );
 
   return (
     <>
       <div className="mb-3">
-        <Button variant="primary" onClick={() => openSectionModal()}>+ Add Section</Button>
+        <Button variant="primary" onClick={() => openSectionModal()}>
+          + Add Section
+        </Button>
       </div>
 
       {testimonialsSections.map((section, sectionIdx) => (
@@ -111,21 +130,56 @@ const TestimonialManager = () => {
               <small className="text-muted">{section.sectionDescription}</small>
             </div>
             <div>
-              <Button size="sm" className="me-2" onClick={() => openSectionModal(sectionIdx)}>Edit</Button>
-              <Button size="sm" variant="success" className="me-2" onClick={() => openItemModal(sectionIdx)}>Add Item</Button>
-              <Button size="sm" variant="danger" onClick={() => deleteSection(sectionIdx)}>Delete</Button>
+              <Button
+                size="sm"
+                className="me-2"
+                onClick={() => openSectionModal(sectionIdx)}
+              >
+                Edit
+              </Button>
+              <Button
+                size="sm"
+                variant="success"
+                className="me-2"
+                onClick={() => openItemModal(sectionIdx)}
+              >
+                Add Item
+              </Button>
+              <Button
+                size="sm"
+                variant="danger"
+                onClick={() => deleteSection(sectionIdx)}
+              >
+                Delete
+              </Button>
             </div>
           </Card.Header>
           <ListGroup variant="flush">
             {section.testimonials.map((item, itemIdx) => (
-              <ListGroup.Item key={item._id || itemIdx} className="d-flex justify-content-between">
+              <ListGroup.Item
+                key={item._id || itemIdx}
+                className="d-flex justify-content-between"
+              >
                 <div style={{ maxWidth: "800px" }}>
                   <strong>{item.writer}</strong>
                   <p className="mb-0">{item.paragraph}</p>
                 </div>
                 <div>
-                  <Button variant="outline-primary" size="sm" className="me-2" onClick={() => openItemModal(sectionIdx, itemIdx)}>Edit</Button>
-                  <Button variant="outline-danger" size="sm" onClick={() => deleteItem(sectionIdx, itemIdx)}>Delete</Button>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                    onClick={() => openItemModal(sectionIdx, itemIdx)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => deleteItem(sectionIdx, itemIdx)}
+                  >
+                    Delete
+                  </Button>
                 </div>
               </ListGroup.Item>
             ))}
@@ -133,55 +187,114 @@ const TestimonialManager = () => {
         </Card>
       ))}
 
-      <Modal show={showSectionModal} onHide={() => setShowSectionModal(false)} centered>
+      <Modal
+        show={showSectionModal}
+        onHide={() => setShowSectionModal(false)}
+        centered
+      >
         <Modal.Header closeButton>
-          <Modal.Title>{editingSection?.idx === null ? "Add Section" : "Edit Section"}</Modal.Title>
+          <Modal.Title>
+            {editingSection?.idx === null ? "Add Section" : "Edit Section"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {editingSection && (
             <Form>
               <Form.Group className="mb-3">
                 <Form.Label>Section Title</Form.Label>
-                <Form.Control type="text" value={editingSection.data.sectionTitle}
-                  onChange={(e) => setEditingSection(p => ({ ...p, data: { ...p.data, sectionTitle: e.target.value } }))} />
+                <Form.Control
+                  type="text"
+                  value={editingSection.data.sectionTitle}
+                  onChange={(e) =>
+                    setEditingSection((p) => ({
+                      ...p,
+                      data: { ...p.data, sectionTitle: e.target.value },
+                    }))
+                  }
+                />
               </Form.Group>
               <Form.Group>
                 <Form.Label>Section Description</Form.Label>
-                <Form.Control as="textarea" rows={3} value={editingSection.data.sectionDescription}
-                  onChange={(e) => setEditingSection(p => ({ ...p, data: { ...p.data, sectionDescription: e.target.value } }))} />
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={editingSection.data.sectionDescription}
+                  onChange={(e) =>
+                    setEditingSection((p) => ({
+                      ...p,
+                      data: { ...p.data, sectionDescription: e.target.value },
+                    }))
+                  }
+                />
               </Form.Group>
             </Form>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowSectionModal(false)}>Cancel</Button>
-          <Button variant="primary" onClick={saveSection}>{editingSection?.idx === null ? "Add" : "Save"}</Button>
+          <Button
+            variant="secondary"
+            onClick={() => setShowSectionModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={saveSection}>
+            {editingSection?.idx === null ? "Add" : "Save"}
+          </Button>
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showItemModal} onHide={() => setShowItemModal(false)} centered>
+      <Modal
+        show={showItemModal}
+        onHide={() => setShowItemModal(false)}
+        centered
+      >
         <Modal.Header closeButton>
-          <Modal.Title>{editingItem?.itemIdx === null ? "Add Testimonial" : "Edit Testimonial"}</Modal.Title>
+          <Modal.Title>
+            {editingItem?.itemIdx === null
+              ? "Add Testimonial"
+              : "Edit Testimonial"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {editingItem && (
             <Form>
               <Form.Group className="mb-3">
                 <Form.Label>Writer</Form.Label>
-                <Form.Control type="text" value={editingItem.data.writer}
-                  onChange={(e) => setEditingItem(p => ({ ...p, data: { ...p.data, writer: e.target.value } }))} />
+                <Form.Control
+                  type="text"
+                  value={editingItem.data.writer}
+                  onChange={(e) =>
+                    setEditingItem((p) => ({
+                      ...p,
+                      data: { ...p.data, writer: e.target.value },
+                    }))
+                  }
+                />
               </Form.Group>
               <Form.Group>
                 <Form.Label>Paragraph</Form.Label>
-                <Form.Control as="textarea" rows={3} value={editingItem.data.paragraph}
-                  onChange={(e) => setEditingItem(p => ({ ...p, data: { ...p.data, paragraph: e.target.value } }))} />
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={editingItem.data.paragraph}
+                  onChange={(e) =>
+                    setEditingItem((p) => ({
+                      ...p,
+                      data: { ...p.data, paragraph: e.target.value },
+                    }))
+                  }
+                />
               </Form.Group>
             </Form>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowItemModal(false)}>Cancel</Button>
-          <Button variant="primary" onClick={saveItem}>{editingItem?.itemIdx === null ? "Add" : "Save"}</Button>
+          <Button variant="secondary" onClick={() => setShowItemModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={saveItem}>
+            {editingItem?.itemIdx === null ? "Add" : "Save"}
+          </Button>
         </Modal.Footer>
       </Modal>
     </>

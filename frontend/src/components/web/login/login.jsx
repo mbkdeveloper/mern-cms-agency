@@ -1,11 +1,11 @@
 // Login.jsx
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { StoreContext } from "../../store/StoreContext";
 import "./login.css";
+import { AuthContext } from "../../../context/AuthContext";
 
 const Login = () => {
-  const { loginUser } = useContext(StoreContext);
+  const { loginUser } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [currState, setCurrState] = useState("Login");
   const [data, setData] = useState({ name: "", email: "", password: "" });

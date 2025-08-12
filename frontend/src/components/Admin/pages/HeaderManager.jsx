@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Table,
   Button,
@@ -8,12 +8,10 @@ import {
   Toast,
   Spinner,
 } from "react-bootstrap";
-
-import { StoreContext } from "./../../store/StoreContext";
-import { API_BASE } from "../../store/api";
+import { HeaderContext } from './../../../context/HeaderContext';
 const HeaderManager = () => {
-  const { headers, fetchHeaders, addHeader, editHeader, deleteHeader } =
-    useContext(StoreContext);
+  const { API_BASE, headers, fetchHeaders, addHeader, editHeader, deleteHeader } =
+    useContext(HeaderContext);
 
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);

@@ -8,7 +8,7 @@ import {
   Spinner,
   Image,
 } from "react-bootstrap";
-import { StoreContext } from "../../store/StoreContext";
+import { ServiceContext } from "../../../context/ServiceContext";
 
 const ServicesManager = () => {
   const {
@@ -21,7 +21,7 @@ const ServicesManager = () => {
     updateServiceItem, // Optional if you add edit item API
     removeServiceItem,
     API_BASE,
-  } = useContext(StoreContext);
+  } = useContext(ServiceContext);
 
   // Loading state for fetch
   const [loading, setLoading] = useState(true);
