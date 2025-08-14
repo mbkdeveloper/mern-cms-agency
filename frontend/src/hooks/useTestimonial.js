@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_BASE, TestimonialApi } from "../api/testimonial";
+import { TestimonialApi } from "../api/testimonial";
 import { useState } from "react";
 
 const useTestimonials = () => {
@@ -129,7 +129,7 @@ const useTestimonials = () => {
     }
   };
   return {
-    testimonialsSections,API_BASE,
+    testimonialsSections,
     fetchTestimonialsSections,
     addTestimonialsSection,
     updateTestimonialsSection,

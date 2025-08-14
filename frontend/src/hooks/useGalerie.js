@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_BASE, GalerieApi } from "../api/galerie";
+import { GalerieApi } from "../api/galerie";
 import axios from "axios";
 
 const useGalerie = () => {
@@ -86,7 +86,7 @@ const useGalerie = () => {
   };
   return {
     galerie,
-    fetchGalerie,API_BASE,
+    fetchGalerie,
     addGalerie,
     editGalerie,
     deleteGalerie,

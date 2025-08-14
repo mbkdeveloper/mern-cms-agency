@@ -1,50 +1,83 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import FullButton from "../../Elements/FullButton";
 // Assets
-import HeaderImage from "../../../assets/img/header-img.png";
 import QuotesIcon from "../../../assets/svg/Quotes";
 import Dots from "../../../assets/svg/Dots";
+import { HeaderContext } from "../../../context/HeaderContext";
+import { TestimonialContext } from "../../../context/TestimonialContext";
 
 export default function Header() {
+  const { testimonialsSections, fetchTestimonialsSections } =
+    useContext(TestimonialContext);
+  const { headers, fetchHeaders } = useContext(HeaderContext);
+  const [, setLoading] = useState(true);
+  // Fetch on mount
+  useEffect(() => {
+    (async () => {
+      await fetchHeaders();
+      await fetchTestimonialsSections();
+      setLoading(false);
+    })();
+  }, [fetchHeaders, fetchTestimonialsSections]);
   return (
-    <Wrapper id="home" className="container flexSpaceCenter">
-      <LeftSide className="flexCenter">
-        <div>
-          <h1 className="extraBold font60">We are Digital Agency.</h1>
-          <HeaderP className="font13 semiBold">
-            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-            voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-          </HeaderP>
-          <BtnWrapper>
-            <FullButton title="Get Started" />
-          </BtnWrapper>
-        </div>
-      </LeftSide>
-      <RightSide>
-        <ImageWrapper>
-          <Img className="radius8" src={HeaderImage} alt="office" style={{zIndex: 9}} />
-          <QuoteWrapper className="flexCenter darkBg radius8">
-            <QuotesWrapper>
-              <QuotesIcon />
-            </QuotesWrapper>
-            <div>
-              <p className="font15 whiteColor">
-                <em>Friends, such as we desire, are dreams and fables. Friendship demands the ability to do without it.</em>
-              </p>
-              <p className="font13 orangeColor textRight" style={{marginTop: '10px'}}>Ralph Waldo Emerson</p>
-            </div>
-          </QuoteWrapper>
-          <DotsWrapper>
-            <Dots />
-          </DotsWrapper>
-        </ImageWrapper>
-        <GreyDiv className="lightBg"></GreyDiv>
-      </RightSide>
-    </Wrapper>
+    <>
+      {headers &&
+        headers.map((element, index) => (
+          <Wrapper id="home" className="container flexSpaceCenter" key={index}>
+            <LeftSide className="flexCenter">
+              <div>
+                <h1 className="extraBold font60"> {element.title} </h1>
+                <HeaderP className="font13 semiBold">
+                  {element.paragraph}
+                </HeaderP>
+                <BtnWrapper>
+                  <FullButton title="Get Started" />
+                </BtnWrapper>
+              </div>
+            </LeftSide>
+            <RightSide>
+              <ImageWrapper>
+                <Img
+                  className="radius8"
+                  src={element.image || null}
+                  alt="office"
+                  style={{ zIndex: 9 }}
+                />
+                <QuoteWrapper className="flexCenter darkBg radius8">
+                  <QuotesWrapper>
+                    <QuotesIcon />
+                  </QuotesWrapper>
+                  {testimonialsSections &&
+                    testimonialsSections.map((section, sectionIdx) => {
+                      const testimonial = section.testimonials[0];
+
+                      return (
+                        <div key={section._id || sectionIdx}>
+                          <p className="font15 whiteColor">
+                            <em>{testimonial.paragraph}</em>
+                          </p>
+                          <p
+                            className="font13 orangeColor textRight"
+                            style={{ marginTop: "10px" }}
+                          >
+                            {testimonial.writer}
+                          </p>
+                        </div>
+                      );
+                    })}
+                </QuoteWrapper>
+                <DotsWrapper>
+                  <Dots />
+                </DotsWrapper>
+              </ImageWrapper>
+              <GreyDiv className="lightBg"></GreyDiv>
+            </RightSide>
+          </Wrapper>
+        ))}
+    </>
   );
 }
-
 
 const Wrapper = styled.section`
   padding-top: 80px;
@@ -150,5 +183,3 @@ const DotsWrapper = styled.div`
     display: none;
   }
 `;
-
-

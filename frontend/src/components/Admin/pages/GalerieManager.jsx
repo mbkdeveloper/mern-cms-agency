@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { GalerieContext } from './../../../context/GalerieContext';
+import { GalerieContext } from "./../../../context/GalerieContext";
 import {
   Table,
   Button,
@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 
 const GalerieManager = () => {
-  const { API_BASE, galerie, fetchGalerie, addGalerie, editGalerie, deleteGalerie } =
+  const { galerie, fetchGalerie, addGalerie, editGalerie, deleteGalerie } =
     useContext(GalerieContext);
   const [showPreview, setShowPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
@@ -112,16 +112,16 @@ const GalerieManager = () => {
                 <tr key={item._id || item.title || index}>
                   <td>
                     <Image
-                      src={API_BASE + item.image}
-                      alt={item.alt}
+                      src={item.image || null}
+                      alt={item.alt || null}
                       thumbnail
                       width={80}
                       style={{ cursor: "pointer" }}
-                      onClick={() => handlePreview(API_BASE + item.image)}
+                      onClick={() => handlePreview(item.image)}
                     />
                   </td>
-                  <td>{item.title}</td>
-                  <td>{item.alt}</td>
+                  <td>{item.title || null}</td>
+                  <td>{item.alt || null}</td>
                   <td
                     onClick={() => handleCopy(item.image)}
                     style={{ cursor: "pointer", color: "blue" }}
@@ -161,7 +161,7 @@ const GalerieManager = () => {
               <Form.Label>Title</Form.Label>
               <Form.Control
                 type="text"
-                value={currentItem.title}
+                value={currentItem.title || null}
                 onChange={(e) =>
                   setCurrentItem({ ...currentItem, title: e.target.value })
                 }
@@ -182,7 +182,7 @@ const GalerieManager = () => {
               <Form.Label>Alt Text</Form.Label>
               <Form.Control
                 type="text"
-                value={currentItem.alt}
+                value={currentItem.alt || null}
                 onChange={(e) =>
                   setCurrentItem({ ...currentItem, alt: e.target.value })
                 }
@@ -206,7 +206,7 @@ const GalerieManager = () => {
         size="lg"
       >
         <Modal.Body className="text-center">
-          <Image src={previewImage} alt="Preview" fluid />
+          <Image src={previewImage || null} alt="Preview" fluid />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowPreview(false)}>

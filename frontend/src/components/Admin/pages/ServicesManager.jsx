@@ -20,7 +20,6 @@ const ServicesManager = () => {
     addServiceItem,
     updateServiceItem, // Optional if you add edit item API
     removeServiceItem,
-    API_BASE,
   } = useContext(ServiceContext);
 
   // Loading state for fetch
@@ -202,8 +201,8 @@ const ServicesManager = () => {
               >
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <Image
-                    src={API_BASE + item.icon}
-                    alt={item.title}
+                    src={item.icon || null}
+                    alt={item.title || null}
                     width={80}
                   />
                   <div style={{maxWidth:"800px", marginLeft:"25px"}}>

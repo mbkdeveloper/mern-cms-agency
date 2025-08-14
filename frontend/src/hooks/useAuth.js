@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {ClientApi} from "../api/client";
-import  {authApi, API_BASE } from "../api/auth";
+import  {authApi} from "../api/auth";
 import axios from "axios";
 
 const useAuth = () => {
@@ -121,7 +121,7 @@ const useAuth = () => {
   return {
     token,
     setToken,
-    userProfile,API_BASE,
+    userProfile,
     setUserProfile,
     fetchMyProfile,
     loginUser,

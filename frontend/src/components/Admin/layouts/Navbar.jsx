@@ -6,7 +6,7 @@ import { ClientContext } from "../../../context/ClientContext";
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const { logout, API_BASE } = useContext(AuthContext);
+  const { logout} = useContext(AuthContext);
   const { userProfile } = useContext(ClientContext);
   const navigate = useNavigate();
 
@@ -68,7 +68,7 @@ const Navbar = () => {
         >
           <span>Hi, {userProfile?.name || "User"}</span>
           <img
-            src={API_BASE + userProfile?.photo}
+            src={userProfile?.photo|| null}
             alt="Profile"
             style={{
               width: "36px",

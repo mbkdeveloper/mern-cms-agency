@@ -6,7 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 const useClient = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [userProfile, setUserProfile] = useState(null);
-    const { logout, API_BASE } = useContext(AuthContext);
+    const { logout} = useContext(AuthContext);
 
   const fetchMyProfile = async () => {
     try {
@@ -93,7 +93,7 @@ const useClient = () => {
   return {
     token,
     setToken,
-    userProfile,API_BASE,
+    userProfile,
     setUserProfile,
     fetchMyProfile,
     updateProfile,

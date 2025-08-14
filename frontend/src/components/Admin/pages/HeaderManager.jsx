@@ -8,9 +8,9 @@ import {
   Toast,
   Spinner,
 } from "react-bootstrap";
-import { HeaderContext } from './../../../context/HeaderContext';
+import { HeaderContext } from "./../../../context/HeaderContext";
 const HeaderManager = () => {
-  const { API_BASE, headers, fetchHeaders, addHeader, editHeader, deleteHeader } =
+  const { headers, fetchHeaders, addHeader, editHeader, deleteHeader } =
     useContext(HeaderContext);
 
   const [loading, setLoading] = useState(true);
@@ -106,12 +106,12 @@ const HeaderManager = () => {
                 <tr key={item._id || index}>
                   <td>
                     <Image
-                      src={API_BASE + item.image}
-                      alt={item.title}
+                      src={item.image || null}
+                      alt={item.title || null}
                       thumbnail
                       width={80}
                       style={{ cursor: "pointer" }}
-                      onClick={() => handlePreview(API_BASE + item.image)}
+                      onClick={() => handlePreview(item.image)}
                     />
                   </td>
                   <td>{item.title}</td>

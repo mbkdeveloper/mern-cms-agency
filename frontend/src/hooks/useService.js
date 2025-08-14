@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { API_BASE, ServiceApi } from "../api/service";
+import { ServiceApi } from "../api/service";
 
 const useServices = () => {
   const [servicesSections, setServicesSections] = useState([]);
@@ -126,7 +126,7 @@ const useServices = () => {
     }
   };
   return {
-    servicesSections,API_BASE,
+    servicesSections,
     fetchServiceSections,
     addServiceSection,
     updateServiceSection,

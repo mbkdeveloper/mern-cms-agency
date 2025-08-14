@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { API_BASE, HeaderApi } from "../api/header";
+import {HeaderApi } from "../api/header";
 import axios from "axios";
 
 const useHeaders = () => {
@@ -71,7 +71,7 @@ const addHeader = async (headerData) => {
   };
   return {
     headers,
-    fetchHeaders,API_BASE,
+    fetchHeaders,
     addHeader,
     editHeader,
     deleteHeader,

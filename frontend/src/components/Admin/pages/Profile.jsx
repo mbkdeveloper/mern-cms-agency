@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from './../../../context/AuthContext';
+import { AuthContext } from "./../../../context/AuthContext";
 import {
   Container,
   Row,
@@ -11,8 +11,7 @@ import {
 } from "react-bootstrap";
 
 const Profile = () => {
-  const { userProfile, API_BASE, updateProfile, deleteProfile } =
-    useContext(AuthContext);
+  const { userProfile, updateProfile, deleteProfile } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -76,13 +75,9 @@ const Profile = () => {
         <Col md={6}>
           <div className="text-center">
             <Image
-              src={
-                formData.photo instanceof File
-                  ? URL.createObjectURL(formData.photo)
-                  : API_BASE + formData.photo
-              }
+              src={formData.photo || null}
               roundedCircle
-              alt={formData.name}
+              alt={formData.name || null}
               width={150}
               height={150}
             />

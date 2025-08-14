@@ -19,7 +19,7 @@ export default function Footer() {
             <Link className="flexCenter animate pointer" to="home" smooth={true} offset={-80}>
               <LogoImg />
               <h1 className="font15 extraBold whiteColor" style={{ marginLeft: "15px" }}>
-                Fanatic
+                TN Smart IOT
               </h1>
             </Link>
             <StyleP className="whiteColor font13">

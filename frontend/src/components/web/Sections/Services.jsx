@@ -7,7 +7,7 @@ import { ServiceContext } from "../../../context/ServiceContext";
 // import ClientSlider from "../../Elements/ClientSlider";
 
 export default function Services() {
-  const { servicesSections, fetchServiceSections, API_BASE } =
+  const { servicesSections, fetchServiceSections } =
     useContext(ServiceContext);
   const [, setLoading] = useState(true);
   // Fetch on mount
@@ -25,16 +25,16 @@ export default function Services() {
       </div>
       <div className="whiteBg" style={{ padding: "60px 0" }}>
         {servicesSections.map((section, sectionIdx) => (
-          <div className="container">
+          <div className="container" key={sectionIdx || section._id}>
             <HeaderInfo>
               <h1 className="font40 extraBold">{section.sectionTitle}</h1>
               <p className="font13">{section.sectionDescription}</p>
             </HeaderInfo>
             <ServiceBoxRow className="flex">
               {section.services.map((item, itemIdx) => (
-                <ServiceBoxWrapper>
+                <ServiceBoxWrapper key={itemIdx || item._id}>
                   <ServiceBox
-                  icon={API_BASE + item.icon}
+                  icon={item.icon}
                     title={item.title}
                     subtitle={item.paragraph}
                   />
