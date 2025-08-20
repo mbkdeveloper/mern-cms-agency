@@ -2,97 +2,138 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import ServiceBox from "../../Elements/ServiceBox";
 import { ServiceContext } from "../../../context/ServiceContext";
+import AddImage2 from "../../../assets/img/add/add2.png";
 
-// import FullButton from "../../Elements/FullButton";
-// import ClientSlider from "../../Elements/ClientSlider";
+// Styled components
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: ${({ visible }) => (visible ? "flex" : "none")};
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: #fff;
+  padding: 30px;
+  max-width: 900px;
+  width: 90%;
+  border-radius: 8px;
+`;
+
+const ClickableServiceBox = styled.div`
+  cursor: pointer;
+`;
+const CloseButton = styled.button`
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #333;
+  &:hover {
+    color: #000;
+  }
+`;
 
 export default function Services() {
   const { servicesSections, fetchServiceSections } =
     useContext(ServiceContext);
-  const [, setLoading] = useState(true);
-  // Fetch on mount
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+
+  // Fetch services on mount
   useEffect(() => {
-    (async () => {
-      await fetchServiceSections();
-      setLoading(false);
-    })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchServiceSections();
+  }, [fetchServiceSections]);
+
+  const handleServiceClick = (service) => {
+    setSelectedService(service);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setSelectedService(null);
+  };
+
   return (
     <Wrapper id="services">
-      {/* <div className="lightBg" style={{ padding: "50px 0" }}> */}
-      <div style={{ padding: "50px 0" }}>
-        <div className="container">{/* <ClientSlider /> */}</div>
-      </div>
       <div className="whiteBg" style={{ padding: "60px 0" }}>
         {servicesSections.map((section, sectionIdx) => (
           <div className="container" key={sectionIdx || section._id}>
             <HeaderInfo>
               <h1 className="font40 extraBold">{section.sectionTitle}</h1>
-              <p className="font13" style={{maxWidth:"700px"}}>{section.sectionDescription}</p>
+              <p className="font13" style={{ maxWidth: "700px" }}>
+                {section.sectionDescription}
+              </p>
             </HeaderInfo>
+
             <ServiceBoxRow className="flex">
               {section.services.map((item, itemIdx) => (
                 <ServiceBoxWrapper key={itemIdx || item._id}>
-                  <ServiceBox
-                  icon={item.icon}
-                    title={item.title}
-                    subtitle={item.paragraph}
-                  />
+                  <ClickableServiceBox onClick={() => handleServiceClick(item)}>
+                    <ServiceBox
+                      icon={item.icon}
+                      title={item.title}
+                      subtitle={item.paragraph}
+                    />
+                  </ClickableServiceBox>
                 </ServiceBoxWrapper>
               ))}
             </ServiceBoxRow>
           </div>
         ))}
-        <div className="lightBg">
-          <div className="container">
-            {/* <Advertising className="flexSpaceCenter">
-              <AddLeft>
-                <h4 className="font15 semiBold">A few words about company</h4>
-                <h2 className="font40 extraBold">A Study of Creativity</h2>
-                <p className="font12">
-                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed
-                  diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                </p>
-                <ButtonsRow className="flexNullCenter" style={{ margin: "30px 0"}}>
-                  <div style={{ width: "190px" }}>
-                    <FullButton title="Get Started" action={() => alert("clicked")} />
-                  </div>
-                  <div style={{ width: "190px", marginLeft: "15px" }}>
-                    <FullButton title="Contact Us" action={() => alert("clicked")} border />
-                  </div>
-                </ButtonsRow>
-              </AddLeft>
-              <AddRight>
-                <AddRightInner>
-                  <div className="flexNullCenter">
-                    <AddImgWrapp1 className="flexCenter">
-                      <img src={AddImage1} alt="office" />
-                    </AddImgWrapp1>
-                    <AddImgWrapp2>
-                      <img src={AddImage2} alt="office" />
-                    </AddImgWrapp2>
-                  </div>
-                  <div className="flexNullCenter">
-                    <AddImgWrapp3>
-                      <img src={AddImage3} alt="office" />
-                    </AddImgWrapp3>
-                    <AddImgWrapp4>
-                      <img src={AddImage4} alt="office" />
-                    </AddImgWrapp4>
-                  </div>
-                </AddRightInner>
-              </AddRight>
-            </Advertising> */}
-          </div>
-        </div>
       </div>
+
+      {/* Modal */}
+      <ModalOverlay visible={modalVisible} onClick={closeModal}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <CloseButton onClick={closeModal}>&times;</CloseButton>
+          {selectedService && (
+            <div className="lightBg">
+              <Advertising className="flexSpaceCenter">
+                <AddLeft>
+                  <AddLeftInner>
+                    <ImgWrapper className="flexCenter">
+                      <img className="radius8" src={AddImage2} alt="add" />
+                    </ImgWrapper>
+                  </AddLeftInner>
+                </AddLeft>
+                <AddRight>
+                  <h4 className="font15 semiBold">A few words about service</h4>
+                  <h2 className="font40 extraBold">A Study of Creativity</h2>
+                  <p className="font12">
+                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+                    diam nonumy eirmod tempor invidunt ut labore et dolore magna
+                    aliquyam erat, sed diam voluptua. At vero eos et accusam et
+                    justo duo dolores et ea rebum.
+                  </p>
+                </AddRight>
+              </Advertising>
+            </div>
+          )}
+        </ModalContent>
+      </ModalOverlay>
     </Wrapper>
   );
 }
 
+// Styled components
 const Wrapper = styled.section`
   width: 100%;
+`;
+const HeaderInfo = styled.div`
+  @media (max-width: 860px) {
+    text-align: center;
+  }
 `;
 const ServiceBoxRow = styled.div`
   @media (max-width: 860px) {
@@ -109,107 +150,60 @@ const ServiceBoxWrapper = styled.div`
     padding: 40px 0;
   }
 `;
-const HeaderInfo = styled.div`
+const Advertising = styled.div`
+  padding: 100px 0;
+  margin: 100px 0;
+  position: relative;
+  @media (max-width: 1160px) {
+    padding: 60px 0 40px 0;
+  }
   @media (max-width: 860px) {
+    flex-direction: column;
+    padding: 0 0 30px 0;
+    margin: 80px 0 0px 0;
+  }
+`;
+
+const AddLeft = styled.div`
+  position: relative;
+  width: 50%;
+  @media (max-width: 860px) {
+    width: 80%;
+    order: 2;
     text-align: center;
   }
 `;
-// const Advertising = styled.div`
-//   margin: 80px 0;
-//   padding: 100px 0;
-//   position: relative;
-//   @media (max-width: 1160px) {
-//     padding: 100px 0 40px 0;
-//   }
-//   @media (max-width: 860px) {
-//     flex-direction: column;
-//     padding: 0 0 30px 0;
-//     margin: 80px 0 0px 0;
-//   }
-// `;
-// const ButtonsRow = styled.div`
-//   @media (max-width: 860px) {
-//     justify-content: space-between;
-//   }
-// `;
-// const AddLeft = styled.div`
-//   width: 50%;
-//   p {
-//     max-width: 475px;
-//   }
-//   @media (max-width: 860px) {
-//     width: 80%;
-//     order: 2;
-//     text-align: center;
-//     h2 {
-//       line-height: 3rem;
-//       margin: 15px 0;
-//     }
-//     p {
-//       margin: 0 auto;
-//     }
-//   }
-// `;
-// const AddRight = styled.div`
-//   width: 50%;
-//   position: absolute;
-//   top: -70px;
-//   right: 0;
-//   @media (max-width: 860px) {
-//     width: 80%;
-//     position: relative;
-//     order: 1;
-//     top: -40px;
-//   }
-// `;
-// const AddRightInner = styled.div`
-//   width: 100%;
-// `;
-// const AddImgWrapp1 = styled.div`
-//   width: 48%;
-//   margin: 0 6% 10px 6%;
-//   img {
-//     width: 100%;
-//     height: auto;
-//     border-radius: 1rem;
-//     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//     -webkit-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//     -moz-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//   }
-// `;
-// const AddImgWrapp2 = styled.div`
-//   width: 30%;
-//   margin: 0 5% 10px 5%;
-//   img {
-//     width: 100%;
-//     height: auto;
-//     border-radius: 1rem;
-//     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//     -webkit-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//     -moz-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//   }
-// `;
-// const AddImgWrapp3 = styled.div`
-//   width: 20%;
-//   margin-left: 40%;
-//   img {
-//     width: 100%;
-//     height: auto;
-//     border-radius: 1rem;
-//     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//     -webkit-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//     -moz-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//   }
-// `;
-// const AddImgWrapp4 = styled.div`
-//   width: 30%;
-//   margin: 0 5%auto;
-//   img {
-//     width: 100%;
-//     height: auto;
-//     border-radius: 1rem;
-//     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//     -webkit-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//     -moz-box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-//   }
-// `;
+const AddRight = styled.div`
+  width: 50%;
+  @media (max-width: 860px) {
+    width: 80%;
+    order: 2;
+  }
+`;
+const AddLeftInner = styled.div`
+  width: 100%;
+  position: absolute;
+  top: -300px;
+  left: 0;
+  @media (max-width: 1190px) {
+    top: -250px;
+  }
+  @media (max-width: 920px) {
+    top: -200px;
+  }
+  @media (max-width: 860px) {
+    position: relative;
+    top: -60px;
+  }
+`;
+const ImgWrapper = styled.div`
+  width: 100%;
+  padding: 0 15%;
+  img {
+    width: 100%;
+    height: auto;
+  }
+  @media (max-width: 400px) {
+    padding: 0;
+  }
+`;
