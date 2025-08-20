@@ -1,10 +1,9 @@
 import React from "react";
 import Slider from "react-slick";
 import styled from "styled-components";
-// Components
 import TestimonialBox from "./TestimonialBox";
 
-export default function TestimonialSlider() {
+export default function TestimonialSlider({ testimonials }) {
   const settings = {
     infinite: true,
     speed: 500,
@@ -28,45 +27,17 @@ export default function TestimonialSlider() {
       },
     ],
   };
+
+  if (!testimonials || testimonials.length === 0) return null;
+
   return (
     <div>
       <Slider {...settings}>
-        <LogoWrapper className="flexCenter">
-          <TestimonialBox
-            text="Friends, such as we desire, are dreams and fables. Friendship demands the ability to do without it."
-            author="Ralph Waldo Emerson"
-          />
-        </LogoWrapper>
-        <LogoWrapper className="flexCenter">
-          <TestimonialBox
-            text="Friends, such as we desire, are dreams and fables. Friendship demands the ability to do without it."
-            author="Ralph Waldo Emerson"
-          />
-        </LogoWrapper>
-        <LogoWrapper className="flexCenter">
-          <TestimonialBox
-            text="Friends, such as we desire, are dreams and fables. Friendship demands the ability to do without it."
-            author="Ralph Waldo Emerson"
-          />
-        </LogoWrapper>
-        <LogoWrapper className="flexCenter">
-          <TestimonialBox
-            text="Friends, such as we desire, are dreams and fables. Friendship demands the ability to do without it."
-            author="Ralph Waldo Emerson"
-          />
-        </LogoWrapper>
-        <LogoWrapper className="flexCenter">
-          <TestimonialBox
-            text="Friends, such as we desire, are dreams and fables. Friendship demands the ability to do without it."
-            author="Ralph Waldo Emerson"
-          />
-        </LogoWrapper>
-        <LogoWrapper className="flexCenter">
-          <TestimonialBox
-            text="Friends, such as we desire, are dreams and fables. Friendship demands the ability to do without it."
-            author="Ralph Waldo Emerson"
-          />
-        </LogoWrapper>
+        {testimonials.map((item, idx) => (
+          <LogoWrapper key={idx} className="flexCenter">
+            <TestimonialBox text={item.paragraph} author={item.writer} />
+          </LogoWrapper>
+        ))}
       </Slider>
     </div>
   );

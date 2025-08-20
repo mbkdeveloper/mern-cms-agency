@@ -18,7 +18,7 @@ const GalerieManager = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [currentItem, setCurrentItem] = useState({
-    title: "",
+    identifiant: "",
     image: "",
     alt: "",
   });
@@ -37,7 +37,7 @@ const GalerieManager = () => {
   // Open Add Modal
   const handleAdd = () => {
     setIsEdit(false);
-    setCurrentItem({ title: "", image: "", alt: "" });
+    setCurrentItem({ identifiant: "", image: "", alt: "" });
     setShowModal(true);
   };
 
@@ -100,7 +100,7 @@ const GalerieManager = () => {
           <thead>
             <tr>
               <th>Preview (Click to open)</th>
-              <th>Title</th>
+              <th>Identifiant</th>
               <th>Alt</th>
               <th>Image Path (click to copy)</th>
               <th>Actions</th>
@@ -109,7 +109,7 @@ const GalerieManager = () => {
           <tbody>
             {Array.isArray(galerie) &&
               galerie.map((item, index) => (
-                <tr key={item._id || item.title || index}>
+                <tr key={item._id || item.identifiant || index}>
                   <td>
                     <Image
                       src={item.image || null}
@@ -120,7 +120,7 @@ const GalerieManager = () => {
                       onClick={() => handlePreview(item.image)}
                     />
                   </td>
-                  <td>{item.title || null}</td>
+                  <td>{item.identifiant || null}</td>
                   <td>{item.alt || null}</td>
                   <td
                     onClick={() => handleCopy(item.image)}
@@ -158,12 +158,12 @@ const GalerieManager = () => {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Title</Form.Label>
+              <Form.Label>Identifiant</Form.Label>
               <Form.Control
                 type="text"
-                value={currentItem.title || null}
+                value={currentItem.identifiant || null}
                 onChange={(e) =>
-                  setCurrentItem({ ...currentItem, title: e.target.value })
+                  setCurrentItem({ ...currentItem, identifiant: e.target.value })
                 }
               />
             </Form.Group>

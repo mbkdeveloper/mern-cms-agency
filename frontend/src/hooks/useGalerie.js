@@ -22,7 +22,7 @@ const useGalerie = () => {
   const addGalerie = async (newItem) => {
     try {
       const formData = new FormData();
-      formData.append("title", newItem.title || "");
+      formData.append("identifiant", newItem.identifiant || "");
       formData.append("alt", newItem.alt || "");
       if (newItem.image) {
         formData.append("image", newItem.image); // newItem.image is a File object
@@ -48,7 +48,7 @@ const useGalerie = () => {
   const editGalerie = async (id, updatedItem) => {
     try {
       const formData = new FormData();
-      formData.append("title", updatedItem.title || "");
+      formData.append("identifiant", updatedItem.identifiant || "");
       formData.append("alt", updatedItem.alt || "");
       formData.append("image", updatedItem.image);
 

@@ -29,7 +29,7 @@ export default function Services() {
           <div className="container" key={sectionIdx || section._id}>
             <HeaderInfo>
               <h1 className="font40 extraBold">{section.sectionTitle}</h1>
-              <p className="font13">{section.sectionDescription}</p>
+              <p className="font13" style={{maxWidth:"700px"}}>{section.sectionDescription}</p>
             </HeaderInfo>
             <ServiceBoxRow className="flex">
               {section.services.map((item, itemIdx) => (

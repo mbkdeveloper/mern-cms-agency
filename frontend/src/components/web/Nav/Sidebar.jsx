@@ -77,7 +77,7 @@ export default function Sidebar({ sidebarOpen, toggleSidebar }) {
           >
             Blog
           </Link>
-        </li> */}
+        </li>*/} 
         <li className="semiBold font15 pointer">
           <Link
             onClick={() => toggleSidebar(!sidebarOpen)}
@@ -94,7 +94,7 @@ export default function Sidebar({ sidebarOpen, toggleSidebar }) {
         </li>
       </UlStyle>
 
-      <UlStyle className="flexSpaceCenter">
+      {/* <UlStyle className="flexSpaceCenter">
         <li className="semiBold font15 pointer">
           <a href="/" style={{ padding: "10px 30px 10px 0" }} className="whiteColor">
             Log in
@@ -105,7 +105,7 @@ export default function Sidebar({ sidebarOpen, toggleSidebar }) {
             Get Started
           </a>
         </li>
-      </UlStyle>
+      </UlStyle> */}
     </Wrapper>
   );
 }
