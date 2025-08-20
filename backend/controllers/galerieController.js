@@ -6,7 +6,7 @@ const addgalerie = async (req, res) => {
   try {
     const image = `/uploads/${req.file.filename}`;
     const galerie = new galerieModel({
-      title: req.body.title,
+      identifiant: req.body.identifiant,
       alt: req.body.alt,
       image: image,
     });
@@ -45,7 +45,7 @@ const editgalerie = async (req, res) => {
       }
       galerie.image = req.file.filename;
     }
-    if (req.body.title) galerie.title = req.body.title;
+    if (req.body.identifiant) galerie.identifiant = req.body.identifiant;
     if (req.body.alt) galerie.alt = req.body.alt;
     await galerie.save();
     res

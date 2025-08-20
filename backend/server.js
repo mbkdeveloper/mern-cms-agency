@@ -10,6 +10,7 @@ import galerieRouter from "./routes/galerieRoute.js";
 import serviceRouter from "./routes/serviceRoute.js";
 import testimonialRouter from "./routes/testimonialRoute.js";
 import headerRouter from "./routes/headerRoute.js";
+import messageRouter from "./routes/messageRoute.js";
 
 dotenv.config();
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/galeries", galerieRouter);
 app.use("/api/services", serviceRouter);
 app.use("/api/testimonials", testimonialRouter);
 app.use("/api/headers", headerRouter);
+app.use("/api/messages", messageRouter);
 
 // Health check route
 app.get("/", (req, res) => {

@@ -16,7 +16,8 @@ export default function Services() {
       await fetchServiceSections();
       setLoading(false);
     })();
-  }, [fetchServiceSections]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Wrapper id="services">
       {/* <div className="lightBg" style={{ padding: "50px 0" }}> */}

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const galerieSchema = new mongoose.Schema({
-  title: { type: String, required: false },
+  identifiant: { type: String, required: false },
   image: { type: String, required: true },
   alt: { type: String, required: false },
 }, { timestamps: true });

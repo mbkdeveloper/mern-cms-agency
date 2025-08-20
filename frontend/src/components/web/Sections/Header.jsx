@@ -48,24 +48,26 @@ export default function Header() {
                   <QuotesWrapper>
                     <QuotesIcon />
                   </QuotesWrapper>
-                  {testimonialsSections &&
-                    testimonialsSections.map((section, sectionIdx) => {
-                      const testimonial = section.testimonials[0];
+{testimonialsSections &&
+  testimonialsSections.map((section, sectionIdx) => (
+    <div key={section._id || sectionIdx}>
+      {Array.isArray(section.testimonials) &&
+        section.testimonials.map((testimonial, tIdx) => (
+          <div key={testimonial._id || tIdx}>
+            <p className="font15 whiteColor">
+              <em>{testimonial.paragraph}</em>
+            </p>
+            <p
+              className="font13 orangeColor textRight"
+              style={{ marginTop: "10px" }}
+            >
+              {testimonial.writer}
+            </p>
+          </div>
+        ))}
+    </div>
+  ))}
 
-                      return (
-                        <div key={section._id || sectionIdx}>
-                          <p className="font15 whiteColor">
-                            <em>{testimonial.paragraph}</em>
-                          </p>
-                          <p
-                            className="font13 orangeColor textRight"
-                            style={{ marginTop: "10px" }}
-                          >
-                            {testimonial.writer}
-                          </p>
-                        </div>
-                      );
-                    })}
                 </QuoteWrapper>
                 <DotsWrapper>
                   <Dots />

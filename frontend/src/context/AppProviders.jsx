@@ -5,6 +5,7 @@ import { ServiceProvider } from "./ServiceContext";
 import { TestimonialProvider } from "./TestimonialContext";
 import { HeaderProvider } from "./HeaderContext";
 import { ClientProvider } from "./ClientContext";
+import { ContactProvider } from "./ContactContext";
 
 const AppProviders = ({ children }) => (
   <AuthProvider>
@@ -12,7 +13,9 @@ const AppProviders = ({ children }) => (
       <GalerieProvider>
         <ServiceProvider>
           <TestimonialProvider>
-            <HeaderProvider>{children}</HeaderProvider>
+            <HeaderProvider>
+              <ContactProvider>{children}</ContactProvider>
+            </HeaderProvider>
           </TestimonialProvider>
         </ServiceProvider>
       </GalerieProvider>
