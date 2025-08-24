@@ -8,6 +8,8 @@ import Profile from "./components/Admin/pages/Profile";
 import PrivateRoute from "./components/Admin/PrivateRoute";
 import GalerieManager from './components/Admin/pages/GalerieManager';
 import TestimonialsManager from "./components/Admin/pages/TestimonialsManager";
+import MailsManager from "./components/Admin/pages/contact/MailsManager";
+import ImageManager from "./components/Admin/pages/contact/ImageManager";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
               <Route path="/admin/profile/me" element={<Profile />} />
               <Route path="/admin/services" element={<ServicesManager />} />
               <Route path="/admin/galerie" element={<GalerieManager />} />
+              <Route path="/admin/contact/liste" element={<MailsManager />} />
+              <Route path="/admin/contact/addGalerie" element={<ImageManager />} />
               <Route path="/admin/testimonials" element={<TestimonialsManager />} />
             </Route>
           </Route>
