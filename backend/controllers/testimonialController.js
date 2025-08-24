@@ -1,9 +1,10 @@
 import testimonialsSectionModel from "../models/testimonialModel.js";
 
+
 // Add a new testimonials section
 const addTestimonialSection = async (req, res) => {
   try {
-    const { sectionTitle, sectionDescription, testimonials } = req.body;
+    const { sectionTitle, sectionDescription, visibility, testimonials } = req.body;
 
     if (!sectionTitle || !sectionDescription) {
       return res.status(400).json({
@@ -15,6 +16,7 @@ const addTestimonialSection = async (req, res) => {
     const newTestimonialSection = new testimonialsSectionModel({
       sectionTitle,
       sectionDescription,
+      visibility: visibility !== undefined ? visibility : true, // ✅ handles visibility
       testimonials,
     });
 
@@ -50,12 +52,17 @@ const listTestimonialSections = async (req, res) => {
 // Update a testimonial section
 const updateTestimonialSection = async (req, res) => {
   const { id } = req.params;
-  const { sectionTitle, sectionDescription, testimonials } = req.body;
+  const { sectionTitle, sectionDescription, visibility, testimonials } = req.body;
 
   try {
     const updatedSection = await testimonialsSectionModel.findByIdAndUpdate(
       id,
-      { sectionTitle, sectionDescription, testimonials },
+      {
+        ...(sectionTitle !== undefined && { sectionTitle }),
+        ...(sectionDescription !== undefined && { sectionDescription }),
+        ...(visibility !== undefined && { visibility }), // ✅ handle visibility update
+        ...(testimonials !== undefined && { testimonials }),
+      },
       { new: true }
     );
 

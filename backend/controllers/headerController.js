@@ -19,11 +19,10 @@ const resizeAndCompressImage = async (filePath) => {
   const tempPath = filePath + "_tmp";
 
   await sharp(filePath)
-    .resize(426, 607, { fit: "cover" }) // fixed dimensions
-    .jpeg({ quality: 80 }) // compress JPEG to 80% quality
+    .resize(426, 607, { fit: "cover" })
+    .jpeg({ quality: 80 }) 
     .toFile(tempPath);
 
-  // Replace original file with optimized one
   fs.renameSync(tempPath, filePath);
 };
 
@@ -42,6 +41,7 @@ const addHeader = async (req, res) => {
       title: req.body.title,
       paragraph: req.body.paragraph,
       image: image,
+      visibility: req.body.visibility !== undefined ? req.body.visibility : true, // ✅ default true
     });
 
     await header.save();
@@ -79,8 +79,9 @@ const editHeader = async (req, res) => {
       header.image = `/uploads/${req.file.filename}`;
     }
 
-    if (req.body.title) header.title = req.body.title;
-    if (req.body.paragraph) header.paragraph = req.body.paragraph;
+    if (req.body.title !== undefined) header.title = req.body.title;
+    if (req.body.paragraph !== undefined) header.paragraph = req.body.paragraph;
+    if (req.body.visibility !== undefined) header.visibility = req.body.visibility; 
 
     await header.save();
     res.status(200).json({ success: true, message: "Header updated", data: header });

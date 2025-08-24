@@ -27,15 +27,17 @@ const TestimonialManager = () => {
     })();
   }, [fetchTestimonialsSections]);
 
+  // ---- Section Modals ----
   const openSectionModal = (idx = null) => {
     setEditingSection({
       idx,
       data:
         idx === null
-          ? { sectionTitle: "", sectionDescription: "" }
+          ? { sectionTitle: "", sectionDescription: "", visibility: true } // ✅ default visible
           : {
               sectionTitle: testimonialsSections[idx].sectionTitle,
               sectionDescription: testimonialsSections[idx].sectionDescription,
+              visibility: testimonialsSections[idx].visibility ?? true,
             },
     });
     setShowSectionModal(true);
@@ -62,19 +64,32 @@ const TestimonialManager = () => {
     if (success) await fetchTestimonialsSections();
   };
 
+  const toggleSectionVisibility = async (idx) => {
+    const section = testimonialsSections[idx];
+    const success = await updateTestimonialsSection(section._id, {
+      ...section,
+      visibility: !section.visibility,
+    });
+    if (success) await fetchTestimonialsSections();
+  };
+
+  // ---- Item Modals ----
   const openItemModal = (sectionIdx, itemIdx = null) => {
     setEditingItem({
       sectionIdx,
       itemIdx,
       data:
         itemIdx === null
-          ? { writer: "", paragraph: "" }
+          ? { writer: "", paragraph: "", visibility: true } // ✅ default visible
           : {
               writer:
                 testimonialsSections[sectionIdx].testimonials[itemIdx].writer,
               paragraph:
                 testimonialsSections[sectionIdx].testimonials[itemIdx]
                   .paragraph,
+              visibility:
+                testimonialsSections[sectionIdx].testimonials[itemIdx]
+                  .visibility ?? true,
             },
     });
     setShowItemModal(true);
@@ -126,10 +141,23 @@ const TestimonialManager = () => {
         <Card key={section._id} className="mb-4">
           <Card.Header className="d-flex justify-content-between align-items-center">
             <div style={{ maxWidth: "800px" }}>
-              <h5>{section.sectionTitle}</h5>
+              <h5>
+                {section.sectionTitle}{" "}
+                <small className="text-muted">
+                  ({section.visibility ? "Visible" : "Hidden"})
+                </small>
+              </h5>
               <small className="text-muted">{section.sectionDescription}</small>
             </div>
             <div>
+              <Button
+                size="sm"
+                variant={section.visibility ? "warning" : "dark"}
+                className="me-2"
+                onClick={() => toggleSectionVisibility(sectionIdx)}
+              >
+                {section.visibility ? "Hide" : "Show"}
+              </Button>
               <Button
                 size="sm"
                 className="me-2"
@@ -187,6 +215,7 @@ const TestimonialManager = () => {
         </Card>
       ))}
 
+      {/* Section Modal */}
       <Modal
         show={showSectionModal}
         onHide={() => setShowSectionModal(false)}
@@ -243,6 +272,7 @@ const TestimonialManager = () => {
         </Modal.Footer>
       </Modal>
 
+      {/* Item Modal */}
       <Modal
         show={showItemModal}
         onHide={() => setShowItemModal(false)}

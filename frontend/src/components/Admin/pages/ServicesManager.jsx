@@ -18,18 +18,17 @@ const ServicesManager = () => {
     updateServiceSection,
     removeServiceSection,
     addServiceItem,
-    updateServiceItem, // Optional if you add edit item API
+    updateServiceItem,
     removeServiceItem,
   } = useContext(ServiceContext);
 
-  // Loading state for fetch
   const [loading, setLoading] = useState(true);
 
-  // Section modal state
+  // Section modal
   const [editingSection, setEditingSection] = useState(null);
   const [showSectionModal, setShowSectionModal] = useState(false);
 
-  // Item modal state
+  // Item modal
   const [editingItem, setEditingItem] = useState(null);
   const [showItemModal, setShowItemModal] = useState(false);
 
@@ -41,12 +40,12 @@ const ServicesManager = () => {
     })();
   }, [fetchServiceSections]);
 
-  // Open Section modal (for add or edit)
+  // Open Section modal (add or edit)
   const openSectionModal = (sectionIdx = null) => {
     if (sectionIdx === null) {
       setEditingSection({
         sectionIdx: null,
-        data: { sectionTitle: "", sectionDescription: "" },
+        data: { sectionTitle: "", sectionDescription: "", visibility: true },
       });
     } else {
       const sec = servicesSections[sectionIdx];
@@ -55,6 +54,7 @@ const ServicesManager = () => {
         data: {
           sectionTitle: sec.sectionTitle,
           sectionDescription: sec.sectionDescription,
+          visibility: sec.visibility ?? true,
         },
       });
     }
@@ -68,6 +68,7 @@ const ServicesManager = () => {
       alert("Please fill all fields.");
       return;
     }
+
     let success;
     if (sectionIdx === null) {
       success = await addServiceSection(data);
@@ -75,16 +76,25 @@ const ServicesManager = () => {
       const id = servicesSections[sectionIdx]._id;
       success = await updateServiceSection(id, data);
     }
+
     if (success) setShowSectionModal(false);
-    
-      await fetchServiceSections();
+    await fetchServiceSections();
+  };
+
+  // Toggle visibility
+  const toggleVisibility = async (sectionIdx) => {
+    const sec = servicesSections[sectionIdx];
+    const id = sec._id;
+    const success = await updateServiceSection(id, {
+      ...sec,
+      visibility: !sec.visibility,
+    });
+    if (success) await fetchServiceSections();
   };
 
   // Delete section
   const deleteSection = async (sectionIdx) => {
-    if (
-      window.confirm("Are you sure you want to delete this entire section?")
-    ) {
+    if (window.confirm("Are you sure you want to delete this entire section?")) {
       const id = servicesSections[sectionIdx]._id;
       const success = await removeServiceSection(id);
       await fetchServiceSections();
@@ -92,7 +102,7 @@ const ServicesManager = () => {
     }
   };
 
-  // Open Item modal (add/edit)
+  // Open Item modal
   const openItemModal = (sectionIdx, itemIdx = null) => {
     if (itemIdx === null) {
       setEditingItem({
@@ -111,6 +121,7 @@ const ServicesManager = () => {
     setShowItemModal(true);
   };
 
+  // Save item
   const saveItem = async () => {
     const { sectionIdx, itemIdx, data } = editingItem;
     if (!data.icon.trim() || !data.title.trim() || !data.paragraph.trim()) {
@@ -121,15 +132,14 @@ const ServicesManager = () => {
     let success = false;
 
     if (itemIdx === null) {
-      // Add new item
       success = await addServiceItem(sectionId, data);
     } else {
-      // Update existing item
       const itemId = servicesSections[sectionIdx].services[itemIdx]._id;
       success = await updateServiceItem(sectionId, itemId, data);
     }
 
     if (success) setShowItemModal(false);
+    await fetchServiceSections();
   };
 
   // Delete item
@@ -139,6 +149,7 @@ const ServicesManager = () => {
       const itemId = servicesSections[sectionIdx].services[itemIdx]._id;
       const success = await removeServiceItem(sectionId, itemId);
       if (!success) alert("Failed to delete item");
+      await fetchServiceSections();
     }
   };
 
@@ -152,7 +163,7 @@ const ServicesManager = () => {
 
   return (
     <>
-      {/* Add Section Button */}
+      {/* Add Section */}
       <div className="mb-3">
         <Button variant="primary" onClick={() => openSectionModal()}>
           + Add Section
@@ -162,11 +173,24 @@ const ServicesManager = () => {
       {servicesSections.map((section, sectionIdx) => (
         <Card key={section._id} className="mb-4">
           <Card.Header className="d-flex justify-content-between align-items-center">
-            <div style={{maxWidth:"800px"}}>
-              <h5>{section.sectionTitle}</h5>
+            <div style={{ maxWidth: "800px" }}>
+              <h5>
+                {section.sectionTitle}{" "}
+                <small className="text-muted">
+                  ({section.visibility ? "Visible" : "Hidden"})
+                </small>
+              </h5>
               <small className="text-muted">{section.sectionDescription}</small>
             </div>
             <div>
+              <Button
+                size="sm"
+                variant={section.visibility ? "warning" : "success"}
+                className="me-2"
+                onClick={() => toggleVisibility(sectionIdx)}
+              >
+                {section.visibility ? "Hide" : "Show"}
+              </Button>
               <Button
                 variant="secondary"
                 size="sm"
@@ -205,7 +229,7 @@ const ServicesManager = () => {
                     alt={item.title || null}
                     width={80}
                   />
-                  <div style={{maxWidth:"800px", marginLeft:"25px"}}>
+                  <div style={{ maxWidth: "800px", marginLeft: "25px" }}>
                     <strong>{item.title}</strong>
                     <p className="mb-0">{item.paragraph}</p>
                   </div>
@@ -253,7 +277,6 @@ const ServicesManager = () => {
                 <Form.Label>Section Title</Form.Label>
                 <Form.Control
                   type="text"
-                  name="sectionTitle"
                   value={editingSection.data.sectionTitle}
                   onChange={(e) =>
                     setEditingSection((prev) => ({
@@ -263,12 +286,11 @@ const ServicesManager = () => {
                   }
                 />
               </Form.Group>
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Label>Section Description</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
-                  name="sectionDescription"
                   value={editingSection.data.sectionDescription}
                   onChange={(e) =>
                     setEditingSection((prev) => ({
@@ -276,6 +298,23 @@ const ServicesManager = () => {
                       data: {
                         ...prev.data,
                         sectionDescription: e.target.value,
+                      },
+                    }))
+                  }
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Check
+                  type="switch"
+                  id="visibility-switch"
+                  label="Visible"
+                  checked={editingSection.data.visibility}
+                  onChange={(e) =>
+                    setEditingSection((prev) => ({
+                      ...prev,
+                      data: {
+                        ...prev.data,
+                        visibility: e.target.checked,
                       },
                     }))
                   }
@@ -317,7 +356,6 @@ const ServicesManager = () => {
                 <Form.Label>Icon (path)</Form.Label>
                 <Form.Control
                   type="text"
-                  name="icon"
                   value={editingItem.data.icon}
                   onChange={(e) =>
                     setEditingItem((prev) => ({
@@ -325,14 +363,12 @@ const ServicesManager = () => {
                       data: { ...prev.data, icon: e.target.value },
                     }))
                   }
-                  placeholder="e.g. bi bi-globe"
                 />
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Label>Title</Form.Label>
                 <Form.Control
                   type="text"
-                  name="title"
                   value={editingItem.data.title}
                   onChange={(e) =>
                     setEditingItem((prev) => ({
@@ -340,7 +376,6 @@ const ServicesManager = () => {
                       data: { ...prev.data, title: e.target.value },
                     }))
                   }
-                  placeholder="Service title"
                 />
               </Form.Group>
               <Form.Group>
@@ -348,7 +383,6 @@ const ServicesManager = () => {
                 <Form.Control
                   as="textarea"
                   rows={3}
-                  name="paragraph"
                   value={editingItem.data.paragraph}
                   onChange={(e) =>
                     setEditingItem((prev) => ({
@@ -356,7 +390,6 @@ const ServicesManager = () => {
                       data: { ...prev.data, paragraph: e.target.value },
                     }))
                   }
-                  placeholder="Service description"
                 />
               </Form.Group>
             </Form>

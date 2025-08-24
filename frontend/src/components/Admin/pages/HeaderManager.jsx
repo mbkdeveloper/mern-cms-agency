@@ -9,6 +9,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { HeaderContext } from "./../../../context/HeaderContext";
+
 const HeaderManager = () => {
   const { headers, fetchHeaders, addHeader, editHeader, deleteHeader } =
     useContext(HeaderContext);
@@ -20,6 +21,7 @@ const HeaderManager = () => {
     title: "",
     paragraph: "",
     image: "",
+    visibility: true, // default visible
   });
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
@@ -35,7 +37,7 @@ const HeaderManager = () => {
 
   const handleAdd = () => {
     setIsEdit(false);
-    setCurrentItem({ title: "", paragraph: "", image: "" });
+    setCurrentItem({ title: "", paragraph: "", image: "", visibility: true });
     setShowModal(true);
   };
 
@@ -55,6 +57,7 @@ const HeaderManager = () => {
     if (success) {
       setToastMsg(`Header ${isEdit ? "updated" : "added"} successfully`);
       setShowToast(true);
+      await fetchHeaders();
     }
     setShowModal(false);
   };
@@ -65,6 +68,7 @@ const HeaderManager = () => {
       if (success) {
         setToastMsg("Header deleted successfully");
         setShowToast(true);
+        await fetchHeaders();
       }
     }
   };
@@ -74,9 +78,23 @@ const HeaderManager = () => {
     setShowPreview(true);
   };
 
-  // When image file selected
   const handleFileChange = (e) => {
     setCurrentItem({ ...currentItem, image: e.target.files[0] });
+  };
+
+  // toggle visibility
+  const toggleVisibility = async (item) => {
+    const success = await editHeader(item._id, {
+      ...item,
+      visibility: !item.visibility,
+    });
+    if (success) {
+      setToastMsg(
+        `Header ${!item.visibility ? "shown" : "hidden"} successfully`
+      );
+      setShowToast(true);
+      await fetchHeaders();
+    }
   };
 
   return (
@@ -93,11 +111,11 @@ const HeaderManager = () => {
         <Table striped bordered hover responsive>
           <thead>
             <tr>
-              <th>Preview (Click to open)</th>
-              <th>Title</th>
-              <th>Paragraph</th>
-              <th>Image</th>
-              <th>Actions</th>
+              <th style={{ width: "20%" }}>Preview (Click to open)</th>
+              <th style={{ width: "20%" }}>Title</th>
+              <th style={{ width: "30%" }}>Paragraph</th>
+              <th style={{ width: "10%" }}>statut</th>
+              <th style={{ width: "20%" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -109,22 +127,31 @@ const HeaderManager = () => {
                       src={item.image || null}
                       alt={item.title || null}
                       thumbnail
-                      width={80}
+                      width="50%"
                       style={{ cursor: "pointer" }}
                       onClick={() => handlePreview(item.image)}
                     />
                   </td>
                   <td>{item.title}</td>
                   <td>{item.paragraph}</td>
-                  <td>{item.image}</td>
+                  <td>{item.visibility ? "Visible" : "Hidden"}</td>
                   <td>
                     <Button
-                      variant="warning"
                       size="sm"
+                      variant={item.visibility ? "warning" : "dark"}
+                      className="me-2"
+                      onClick={() => toggleVisibility(item)}
+                    >
+                      {item.visibility ? "Hide" : "Show"}
+                    </Button>
+                    <Button
+                      variant="info"
+                      size="sm"
+                      className="me-2"
                       onClick={() => handleEdit(item)}
                     >
                       Edit
-                    </Button>{" "}
+                    </Button>
                     <Button
                       variant="danger"
                       size="sm"

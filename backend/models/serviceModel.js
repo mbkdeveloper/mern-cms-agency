@@ -25,7 +25,10 @@ const servicesSectionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // services: [serviceItemSchema]
+  visibility: {
+    type: Boolean,
+    default: true 
+  },
   services: [serviceItemSchema]
 });
 

@@ -1,41 +1,42 @@
 import { useState } from "react";
-import {HeaderApi } from "../api/header";
+import { HeaderApi } from "../api/header";
 import axios from "axios";
 
 const useHeaders = () => {
   const [headers, setHeaders] = useState([]);
-    const fetchHeaders = async () => {
+
+  const fetchHeaders = async () => {
     try {
       const res = await axios.get(HeaderApi.listHeaders);
-      // Make sure galerie is always an array
+      // Ensure headers is always an array
       setHeaders(Array.isArray(res.data) ? res.data : res.data.data || []);
     } catch (err) {
       console.error("Error fetching headers:", err);
       setHeaders([]);
     }
   };
-  
 
-const addHeader = async (headerData) => {
-  try {
-    const formData = new FormData();
-    formData.append("title", headerData.title);
-    formData.append("paragraph", headerData.paragraph);
-    if (headerData.image instanceof File) {
-      formData.append("image", headerData.image);
+  // Add header
+  const addHeader = async (headerData) => {
+    try {
+      const formData = new FormData();
+      formData.append("title", headerData.title);
+      formData.append("paragraph", headerData.paragraph);
+      formData.append("visibility", headerData.visibility ?? true); // ✅ include visibility
+      if (headerData.image instanceof File) {
+        formData.append("image", headerData.image);
+      }
+
+      const res = await axios.post(HeaderApi.addHeader, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setHeaders((prev) => [...(Array.isArray(prev) ? prev : []), res.data]);
+      return true;
+    } catch (err) {
+      console.error("Failed to add header:", err);
+      return false;
     }
-
-    const res = await axios.post(HeaderApi.addHeader, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    setHeaders((prev) => [...(Array.isArray(prev) ? prev : []), res.data]);
-    return true;
-  } catch (err) {
-    console.error("Failed to add header:", err);
-    return false;
-  }
-};
-
+  };
 
   // Edit header
   const editHeader = async (id, updatedData) => {
@@ -43,6 +44,7 @@ const addHeader = async (headerData) => {
       const formData = new FormData();
       formData.append("title", updatedData.title);
       formData.append("paragraph", updatedData.paragraph);
+      formData.append("visibility", updatedData.visibility ?? true); // ✅ include visibility
       if (updatedData.image instanceof File) {
         formData.append("image", updatedData.image);
       }
@@ -69,6 +71,7 @@ const addHeader = async (headerData) => {
       return false;
     }
   };
+
   return {
     headers,
     fetchHeaders,

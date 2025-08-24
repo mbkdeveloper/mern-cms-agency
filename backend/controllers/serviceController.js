@@ -3,7 +3,7 @@ import servicesSectionModel from "../models/serviceModel.js";
 // Add a new service section
 const addServiceSection = async (req, res) => {
   try {
-    const { sectionTitle, sectionDescription, services } = req.body;
+    const { sectionTitle, sectionDescription, visibility, services } = req.body;
 
     if (!sectionTitle || !sectionDescription) {
       return res.status(400).json({
@@ -15,6 +15,7 @@ const addServiceSection = async (req, res) => {
     const newServiceSection = new servicesSectionModel({
       sectionTitle,
       sectionDescription,
+      visibility: visibility !== undefined ? visibility : true, // ✅ handles visibility
       services,
     });
 
@@ -48,12 +49,17 @@ const listServiceSections = async (req, res) => {
 // Update an existing service section
 const updateServiceSection = async (req, res) => {
   const { id } = req.params;
-  const { sectionTitle, sectionDescription, services } = req.body;
+  const { sectionTitle, sectionDescription, visibility, services } = req.body;
 
   try {
     const updatedSection = await servicesSectionModel.findByIdAndUpdate(
       id,
-      { sectionTitle, sectionDescription, services },
+      {
+        ...(sectionTitle !== undefined && { sectionTitle }),
+        ...(sectionDescription !== undefined && { sectionDescription }),
+        ...(visibility !== undefined && { visibility }), // ✅ handle visibility update
+        ...(services !== undefined && { services }),
+      },
       { new: true }
     );
 
@@ -161,7 +167,6 @@ const editServiceItem = async (req, res) => {
   const { icon, title, paragraph } = req.body;
 
   try {
-    // Trouver la section par ID
     const section = await servicesSectionModel.findById(sectionId);
     if (!section) {
       return res
@@ -169,7 +174,6 @@ const editServiceItem = async (req, res) => {
         .json({ success: false, message: "Service section not found" });
     }
 
-    // Trouver l'item à modifier dans le tableau services
     const item = section.services.id(itemId);
     if (!item) {
       return res
@@ -177,12 +181,10 @@ const editServiceItem = async (req, res) => {
         .json({ success: false, message: "Service item not found" });
     }
 
-    // Mettre à jour les champs (uniquement si fournis)
     if (icon !== undefined) item.icon = icon;
     if (title !== undefined) item.title = title;
     if (paragraph !== undefined) item.paragraph = paragraph;
 
-    // Sauvegarder la section entière avec l'item modifié
     await section.save();
 
     res

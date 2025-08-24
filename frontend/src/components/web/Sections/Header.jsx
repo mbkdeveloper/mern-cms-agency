@@ -22,8 +22,8 @@ export default function Header() {
   }, [fetchHeaders, fetchTestimonialsSections]);
   return (
     <>
-      {headers &&
-        headers.map((element, index) => (
+      {headers && 
+        headers.filter((element) => element.visibility).map((element, index) => (
           <Wrapper id="home" className="container flexSpaceCenter" key={index}>
             <LeftSide className="flexCenter">
               <div>
