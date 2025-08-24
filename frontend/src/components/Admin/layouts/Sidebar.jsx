@@ -6,16 +6,16 @@ const Sidebar = () => {
   const [servicesOpen, setServicesOpen] = useState(false);
 
   const items = [
-    { href: "/admin/header", label: "Header" },
+    { href: "/admin/header", label: "Home" },
     { href: "/admin/services", label: "Services" },
     { href: "/admin/galerie", label: "Galerie" },
     { href: "/admin/testimonials", label: "Testimonial" },
     // {
-    //   href: "/admin/services",
-    //   label: "Services",
+    //   href: "/admin/contact",
+    //   label: "Contact",
     //   submenu: [
-    //     { href: "/admin/services", label: "List de service" },
-    //     { href: "/admin/services/add", label: "ajouter un service" },
+    //     { href: "/admin/contact/liste", label: "List des e-mails" },
+    //     { href: "/admin/contact/addGalerie", label: "Ajouter des images" },
     //   ],
     // },
   ];
@@ -28,7 +28,7 @@ const Sidebar = () => {
   return (
     <div
       style={{
-        width: "220px",
+        width: "260px",
         height: "100vh",
         backgroundColor: "#f8f9fa",
         paddingTop: "20px",
