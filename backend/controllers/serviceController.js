@@ -232,6 +232,152 @@ const removeServiceItem = async (req, res) => {
   }
 };
 
+/* ----------------- SERVICE DETAILS (inside service item) ------------------ */
+
+// Get details of a specific service item
+const getServiceDetails = async (req, res) => {
+  const { sectionId, itemId } = req.params;
+
+  try {
+    const section = await servicesSectionModel.findById(sectionId);
+    if (!section)
+      return res
+        .status(404)
+        .json({ success: false, message: "Service section not found" });
+
+    const item = section.services.id(itemId);
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Service item not found" });
+
+    res.status(200).json({ success: true, data: item.details || null });
+  } catch (error) {
+    console.error("Error fetching service details:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching service details" });
+  }
+};
+
+// Add details to a service item (only if not already present)
+const addServiceDetails = async (req, res) => {
+  const { sectionId, itemId } = req.params;
+  const { heading, subHeading, description, additionalInfo, media } = req.body;
+
+  try {
+    const section = await servicesSectionModel.findById(sectionId);
+    if (!section)
+      return res
+        .status(404)
+        .json({ success: false, message: "Service section not found" });
+
+    const item = section.services.id(itemId);
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Service item not found" });
+
+    if (item.details && Object.keys(item.details.toObject()).length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Details already exist. Use update instead.",
+      });
+    }
+
+    item.details = { heading, subHeading, description, additionalInfo, media };
+    await section.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Service details added",
+      data: item.details,
+    });
+  } catch (error) {
+    console.error("Error adding service details:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error adding service details" });
+  }
+};
+
+// Update details of a service item (creates if not exists)
+const updateServiceDetails = async (req, res) => {
+  const { sectionId, itemId } = req.params;
+  const { heading, subHeading, description, additionalInfo, media } = req.body;
+
+  try {
+    const section = await servicesSectionModel.findById(sectionId);
+    if (!section)
+      return res
+        .status(404)
+        .json({ success: false, message: "Service section not found" });
+
+    const item = section.services.id(itemId);
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Service item not found" });
+
+    if (!item.details) {
+      // auto-create details if missing
+      item.details = {};
+    }
+
+    if (heading !== undefined) item.details.heading = heading;
+    if (subHeading !== undefined) item.details.subHeading = subHeading;
+    if (description !== undefined) item.details.description = description;
+    if (additionalInfo !== undefined)
+      item.details.additionalInfo = additionalInfo;
+    if (media !== undefined) item.details.media = media;
+
+    await section.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Service details updated",
+      data: item.details,
+    });
+  } catch (error) {
+    console.error("Error updating service details:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error updating service details" });
+  }
+};
+
+// Remove details from a service item
+const removeServiceDetails = async (req, res) => {
+  const { sectionId, itemId } = req.params;
+
+  try {
+    const section = await servicesSectionModel.findById(sectionId);
+    if (!section)
+      return res
+        .status(404)
+        .json({ success: false, message: "Service section not found" });
+
+    const item = section.services.id(itemId);
+    if (!item)
+      return res
+        .status(404)
+        .json({ success: false, message: "Service item not found" });
+
+    item.details = undefined;
+    await section.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Service details removed",
+    });
+  } catch (error) {
+    console.error("Error removing service details:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error removing service details" });
+  }
+};
+
 export {
   addServiceSection,
   listServiceSections,
@@ -241,4 +387,8 @@ export {
   addServiceItem,
   editServiceItem,
   removeServiceItem,
+  getServiceDetails,
+  addServiceDetails,
+  updateServiceDetails,
+  removeServiceDetails,
 };

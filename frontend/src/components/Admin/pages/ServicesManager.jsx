@@ -20,19 +20,26 @@ const ServicesManager = () => {
     addServiceItem,
     updateServiceItem,
     removeServiceItem,
+    addServiceItemDetails,
+    updateServiceItemDetails,
+    removeServiceItemDetails,
   } = useContext(ServiceContext);
 
   const [loading, setLoading] = useState(true);
 
-  // Section modal
+  // Section Modal
   const [editingSection, setEditingSection] = useState(null);
   const [showSectionModal, setShowSectionModal] = useState(false);
 
-  // Item modal
+  // Item Modal
   const [editingItem, setEditingItem] = useState(null);
   const [showItemModal, setShowItemModal] = useState(false);
 
-  // Fetch on mount
+  // Detail Modal
+  const [editingDetail, setEditingDetail] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+
+  // Fetch all sections on mount
   useEffect(() => {
     (async () => {
       await fetchServiceSections();
@@ -40,7 +47,9 @@ const ServicesManager = () => {
     })();
   }, [fetchServiceSections]);
 
-  // Open Section modal (add or edit)
+  // -------------------------------
+  // Section Functions
+  // -------------------------------
   const openSectionModal = (sectionIdx = null) => {
     if (sectionIdx === null) {
       setEditingSection({
@@ -61,48 +70,37 @@ const ServicesManager = () => {
     setShowSectionModal(true);
   };
 
-  // Save section (add or update)
   const saveSection = async () => {
     const { sectionIdx, data } = editingSection;
-    if (!data.sectionTitle.trim() || !data.sectionDescription.trim()) {
-      alert("Please fill all fields.");
-      return;
-    }
-
-    let success;
-    if (sectionIdx === null) {
-      success = await addServiceSection(data);
-    } else {
-      const id = servicesSections[sectionIdx]._id;
-      success = await updateServiceSection(id, data);
-    }
-
+    if (!data.sectionTitle.trim() || !data.sectionDescription.trim())
+      return alert("Please fill all fields.");
+    let success =
+      sectionIdx === null
+        ? await addServiceSection(data)
+        : await updateServiceSection(servicesSections[sectionIdx]._id, data);
     if (success) setShowSectionModal(false);
     await fetchServiceSections();
   };
 
-  // Toggle visibility
-  const toggleVisibility = async (sectionIdx) => {
+  const toggleSectionVisibility = async (sectionIdx) => {
     const sec = servicesSections[sectionIdx];
-    const id = sec._id;
-    const success = await updateServiceSection(id, {
+    await updateServiceSection(sec._id, {
       ...sec,
       visibility: !sec.visibility,
     });
-    if (success) await fetchServiceSections();
+    await fetchServiceSections();
   };
 
-  // Delete section
   const deleteSection = async (sectionIdx) => {
-    if (window.confirm("Are you sure you want to delete this entire section?")) {
-      const id = servicesSections[sectionIdx]._id;
-      const success = await removeServiceSection(id);
+    if (window.confirm("Delete this section?")) {
+      await removeServiceSection(servicesSections[sectionIdx]._id);
       await fetchServiceSections();
-      if (!success) alert("Failed to delete section");
     }
   };
 
-  // Open Item modal
+  // -------------------------------
+  // Item Functions
+  // -------------------------------
   const openItemModal = (sectionIdx, itemIdx = null) => {
     if (itemIdx === null) {
       setEditingItem({
@@ -121,49 +119,81 @@ const ServicesManager = () => {
     setShowItemModal(true);
   };
 
-  // Save item
   const saveItem = async () => {
     const { sectionIdx, itemIdx, data } = editingItem;
-    if (!data.icon.trim() || !data.title.trim() || !data.paragraph.trim()) {
-      alert("Please fill all fields.");
-      return;
-    }
+    if (!data.icon.trim() || !data.title.trim() || !data.paragraph.trim())
+      return alert("Please fill all fields.");
     const sectionId = servicesSections[sectionIdx]._id;
-    let success = false;
-
-    if (itemIdx === null) {
-      success = await addServiceItem(sectionId, data);
-    } else {
-      const itemId = servicesSections[sectionIdx].services[itemIdx]._id;
-      success = await updateServiceItem(sectionId, itemId, data);
-    }
-
+    const success =
+      itemIdx === null
+        ? await addServiceItem(sectionId, data)
+        : await updateServiceItem(
+            sectionId,
+            servicesSections[sectionIdx].services[itemIdx]._id,
+            data
+          );
     if (success) setShowItemModal(false);
     await fetchServiceSections();
   };
 
-  // Delete item
   const deleteItem = async (sectionIdx, itemIdx) => {
-    if (window.confirm("Delete this service item?")) {
-      const sectionId = servicesSections[sectionIdx]._id;
-      const itemId = servicesSections[sectionIdx].services[itemIdx]._id;
-      const success = await removeServiceItem(sectionId, itemId);
-      if (!success) alert("Failed to delete item");
-      await fetchServiceSections();
-    }
+    if (!window.confirm("Delete this item?")) return;
+    const sectionId = servicesSections[sectionIdx]._id;
+    const itemId = servicesSections[sectionIdx].services[itemIdx]._id;
+    await removeServiceItem(sectionId, itemId);
+    await fetchServiceSections();
   };
 
-  if (loading) {
+  // -------------------------------
+  // Detail Functions
+  // -------------------------------
+  const openDetailModal = (sectionIdx, itemIdx) => {
+    const item = servicesSections[sectionIdx].services[itemIdx];
+    setEditingDetail({
+      sectionIdx,
+      itemIdx,
+      data: item.details || {
+        heading: "",
+        subHeading: "",
+        description: "",
+        additionalInfo: "",
+        media: "",
+      },
+    });
+    setShowDetailModal(true);
+  };
+
+  const saveDetail = async () => {
+    const { sectionIdx, itemIdx, data } = editingDetail;
+    const sectionId = servicesSections[sectionIdx]._id;
+    const itemId = servicesSections[sectionIdx].services[itemIdx]._id;
+    const success = data._id
+      ? await updateServiceItemDetails(sectionId, itemId, data)
+      : await addServiceItemDetails(sectionId, itemId, data);
+    if (success) setShowDetailModal(false);
+    await fetchServiceSections();
+  };
+
+  const deleteDetail = async (sectionIdx, itemIdx) => {
+    if (!window.confirm("Delete this detail?")) return;
+    const sectionId = servicesSections[sectionIdx]._id;
+    const itemId = servicesSections[sectionIdx].services[itemIdx]._id;
+    await removeServiceItemDetails(sectionId, itemId);
+    await fetchServiceSections();
+  };
+
+  // -------------------------------
+  // Render
+  // -------------------------------
+  if (loading)
     return (
       <div className="text-center py-5">
         <Spinner animation="border" />
       </div>
     );
-  }
 
   return (
     <>
-      {/* Add Section */}
       <div className="mb-3">
         <Button variant="primary" onClick={() => openSectionModal()}>
           + Add Section
@@ -187,7 +217,7 @@ const ServicesManager = () => {
                 size="sm"
                 variant={section.visibility ? "warning" : "success"}
                 className="me-2"
-                onClick={() => toggleVisibility(sectionIdx)}
+                onClick={() => toggleSectionVisibility(sectionIdx)}
               >
                 {section.visibility ? "Hide" : "Show"}
               </Button>
@@ -221,35 +251,91 @@ const ServicesManager = () => {
             {section.services.map((item, itemIdx) => (
               <ListGroup.Item
                 key={item._id || itemIdx}
-                className="d-flex align-items-center justify-content-between"
+                className="d-flex flex-column"
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Image
-                    src={item.icon || null}
-                    alt={item.title || null}
-                    width={80}
-                  />
-                  <div style={{ maxWidth: "800px", marginLeft: "25px" }}>
-                    <strong>{item.title}</strong>
-                    <p className="mb-0">{item.paragraph}</p>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <Image
+                      src={item.icon || null}
+                      alt={item.title || null}
+                      width={80}
+                    />
+                    <div style={{ maxWidth: "800px", marginLeft: "25px" }}>
+                      <strong>{item.title}</strong>
+                      <p className="mb-0">{item.paragraph}</p>
+                    </div>
+                  </div>
+                  <div>
+                  {item.details ? null : (
+
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => openDetailModal(sectionIdx, itemIdx)}
+                    >
+                      + Add Details
+                    </Button>
+                  )}
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="me-2"
+                      onClick={() => openItemModal(sectionIdx, itemIdx)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => deleteItem(sectionIdx, itemIdx)}
+                    >
+                      Delete
+                    </Button>
                   </div>
                 </div>
-                <div>
-                  <Button
-                    variant="outline-primary"
-                    size="sm"
-                    className="me-2"
-                    onClick={() => openItemModal(sectionIdx, itemIdx)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => deleteItem(sectionIdx, itemIdx)}
-                  >
-                    Delete
-                  </Button>
+
+                <div className="mt-3 ps-5">
+                  {item.details ? (
+                    <ListGroup.Item
+                      key={item.details._id || itemIdx}
+                      className="d-flex flex-column"
+                    >
+                      <div className="d-flex align-items-center justify-content-between">
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <Image
+                            src={item.details.media || null}
+                            alt={item.details.title || null}
+                            width={80}
+                          />
+                          <div
+                            style={{ maxWidth: "800px", marginLeft: "25px" }}
+                          >
+                            <strong>{item.details.heading}</strong><br/>
+                            <em>({item.details.subHeading})</em>
+                            <p className="mb-0">{item.details.description}</p>
+                            <small>{item.details.additionalInfo}</small>
+                          </div>
+                        </div>
+                        <div>
+                          <Button
+                            variant="success"
+                            size="sm"
+                            className="me-2"
+                            onClick={() => openDetailModal(sectionIdx, itemIdx)}
+                          >
+                            Edit Details
+                          </Button>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => deleteDetail(sectionIdx, itemIdx)}
+                          >
+                            Delete Details
+                          </Button>
+                        </div>
+                      </div>
+                    </ListGroup.Item>
+                  ) : null}
                 </div>
               </ListGroup.Item>
             ))}
@@ -312,10 +398,7 @@ const ServicesManager = () => {
                   onChange={(e) =>
                     setEditingSection((prev) => ({
                       ...prev,
-                      data: {
-                        ...prev.data,
-                        visibility: e.target.checked,
-                      },
+                      data: { ...prev.data, visibility: e.target.checked },
                     }))
                   }
                 />
@@ -353,7 +436,7 @@ const ServicesManager = () => {
           {editingItem && (
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label>Icon (path)</Form.Label>
+                <Form.Label>Icon (URL or path)</Form.Label>
                 <Form.Control
                   type="text"
                   value={editingItem.data.icon}
@@ -401,6 +484,101 @@ const ServicesManager = () => {
           </Button>
           <Button variant="primary" onClick={saveItem}>
             {editingItem?.itemIdx === null ? "Add" : "Save Changes"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Detail Modal */}
+      <Modal
+        show={showDetailModal}
+        onHide={() => setShowDetailModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {editingDetail?.data._id
+              ? "Edit Service Detail"
+              : "Add Service Detail"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {editingDetail && (
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Heading</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={editingDetail.data.heading}
+                  onChange={(e) =>
+                    setEditingDetail((prev) => ({
+                      ...prev,
+                      data: { ...prev.data, heading: e.target.value },
+                    }))
+                  }
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Sub Heading</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={editingDetail.data.subHeading}
+                  onChange={(e) =>
+                    setEditingDetail((prev) => ({
+                      ...prev,
+                      data: { ...prev.data, subHeading: e.target.value },
+                    }))
+                  }
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={editingDetail.data.description}
+                  onChange={(e) =>
+                    setEditingDetail((prev) => ({
+                      ...prev,
+                      data: { ...prev.data, description: e.target.value },
+                    }))
+                  }
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Additional Info</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={editingDetail.data.additionalInfo}
+                  onChange={(e) =>
+                    setEditingDetail((prev) => ({
+                      ...prev,
+                      data: { ...prev.data, additionalInfo: e.target.value },
+                    }))
+                  }
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Media (URL)</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={editingDetail.data.media}
+                  onChange={(e) =>
+                    setEditingDetail((prev) => ({
+                      ...prev,
+                      data: { ...prev.data, media: e.target.value },
+                    }))
+                  }
+                />
+              </Form.Group>
+            </Form>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={saveDetail}>
+            {editingDetail?.data._id ? "Save Changes" : "Add Detail"}
           </Button>
         </Modal.Footer>
       </Modal>

@@ -1,18 +1,18 @@
 import { useState, useEffect, useContext } from "react";
 import {
-  Table,
+  Card,
+  ListGroup,
   Button,
   Modal,
   Form,
   Image,
-  Toast,
   Spinner,
 } from "react-bootstrap";
 import { HeaderContext } from "./../../../context/HeaderContext";
 
 const HeaderManager = () => {
-  const { headers, fetchHeaders, addHeader, editHeader, deleteHeader } =
-    useContext(HeaderContext);
+const { headers, fetchHeaders, addHeader, editHeader, deleteHeader } = useContext(HeaderContext);
+
 
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -21,10 +21,8 @@ const HeaderManager = () => {
     title: "",
     paragraph: "",
     image: "",
-    visibility: true, // default visible
+    visibility: true,
   });
-  const [showToast, setShowToast] = useState(false);
-  const [toastMsg, setToastMsg] = useState("");
   const [showPreview, setShowPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -48,28 +46,17 @@ const HeaderManager = () => {
   };
 
   const handleSave = async () => {
-    let success;
-    if (isEdit) {
-      success = await editHeader(currentItem._id, currentItem);
-    } else {
-      success = await addHeader(currentItem);
-    }
-    if (success) {
-      setToastMsg(`Header ${isEdit ? "updated" : "added"} successfully`);
-      setShowToast(true);
-      await fetchHeaders();
-    }
+    if (isEdit) await editHeader(currentItem._id, currentItem);
+    else await addHeader(currentItem);
+
     setShowModal(false);
+    await fetchHeaders();
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this header?")) {
-      const success = await deleteHeader(id);
-      if (success) {
-        setToastMsg("Header deleted successfully");
-        setShowToast(true);
-        await fetchHeaders();
-      }
+      await deleteHeader(id);
+      await fetchHeaders();
     }
   };
 
@@ -82,20 +69,10 @@ const HeaderManager = () => {
     setCurrentItem({ ...currentItem, image: e.target.files[0] });
   };
 
-  // toggle visibility
-  const toggleVisibility = async (item) => {
-    const success = await editHeader(item._id, {
-      ...item,
-      visibility: !item.visibility,
-    });
-    if (success) {
-      setToastMsg(
-        `Header ${!item.visibility ? "shown" : "hidden"} successfully`
-      );
-      setShowToast(true);
-      await fetchHeaders();
-    }
-  };
+const toggleVisibility = async (item) => {
+  await editHeader(item._id, { ...item, visibility: !item.visibility });
+  await fetchHeaders();
+};
 
   return (
     <div className="p-3">
@@ -108,62 +85,66 @@ const HeaderManager = () => {
           <Spinner animation="border" />
         </div>
       ) : (
-        <Table striped bordered hover responsive>
-          <thead>
-            <tr>
-              <th style={{ width: "20%" }}>Preview (Click to open)</th>
-              <th style={{ width: "20%" }}>Title</th>
-              <th style={{ width: "30%" }}>Paragraph</th>
-              <th style={{ width: "10%" }}>statut</th>
-              <th style={{ width: "20%" }}>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(headers) &&
-              headers.map((item, index) => (
-                <tr key={item._id || index}>
-                  <td>
-                    <Image
-                      src={item.image || null}
-                      alt={item.title || null}
-                      thumbnail
-                      width="50%"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handlePreview(item.image)}
-                    />
-                  </td>
-                  <td>{item.title}</td>
-                  <td>{item.paragraph}</td>
-                  <td>{item.visibility ? "Visible" : "Hidden"}</td>
-                  <td>
-                    <Button
-                      size="sm"
-                      variant={item.visibility ? "warning" : "dark"}
-                      className="me-2"
-                      onClick={() => toggleVisibility(item)}
-                    >
-                      {item.visibility ? "Hide" : "Show"}
-                    </Button>
-                    <Button
-                      variant="info"
-                      size="sm"
-                      className="me-2"
-                      onClick={() => handleEdit(item)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleDelete(item._id)}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </Table>
+        headers.map((item, index) => (
+          <Card key={item._id || index} className="mb-3">
+            <Card.Header className="d-flex justify-content-between align-items-start flex-wrap">
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {item.image && (
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    thumbnail
+                    width={80}
+                    height={80}
+                    className="me-3"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handlePreview(item.image)}
+                  />
+                )}
+                <div style={{ maxWidth: "800px" }}>
+                  <h5 className="mb-1">
+                    {item.title}{" "}
+                    <small className="text-muted">
+                      ({item.visibility ? "Visible" : "Hidden"})
+                    </small>
+                  </h5>
+
+                  <p className="mb-1">{item.paragraph}</p>
+                </div>
+              </div>
+              <div className="mt-2">
+                <Button
+                  size="sm"
+                  variant={item.visibility ? "warning" : "dark"}
+                  className="me-2 mb-1"
+                  onClick={() => toggleVisibility(item)}
+                >
+                  {item.visibility ? "Hide" : "Show"}
+                </Button>
+                <Button
+                  variant="info"
+                  size="sm"
+                  className="me-2 mb-1"
+                  onClick={() => handleEdit(item)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  className="mb-1"
+                  onClick={() => handleDelete(item._id)}
+                >
+                  Delete
+                </Button>
+              </div>
+            </Card.Header>
+
+            <ListGroup variant="flush">
+              {/* You can add more ListGroup.Item here if you have extra properties */}
+            </ListGroup>
+          </Card>
+        ))
       )}
 
       {/* Add/Edit Modal */}
@@ -231,23 +212,6 @@ const HeaderManager = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {/* Toast */}
-      <Toast
-        show={showToast}
-        onClose={() => setShowToast(false)}
-        delay={2000}
-        autohide
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          backgroundColor: "#28a745",
-          color: "white",
-        }}
-      >
-        <Toast.Body>{toastMsg}</Toast.Body>
-      </Toast>
     </div>
   );
 };

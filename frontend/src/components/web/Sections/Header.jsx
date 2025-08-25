@@ -6,6 +6,7 @@ import QuotesIcon from "../../../assets/svg/Quotes";
 import Dots from "../../../assets/svg/Dots";
 import { HeaderContext } from "../../../context/HeaderContext";
 import { TestimonialContext } from "../../../context/TestimonialContext";
+import { Link } from "react-scroll";
 
 export default function Header() {
   const { testimonialsSections, fetchTestimonialsSections } =
@@ -22,34 +23,46 @@ export default function Header() {
   }, [fetchHeaders, fetchTestimonialsSections]);
   return (
     <>
-      {headers && 
-        headers.filter((element) => element.visibility).map((element, index) => (
-          <Wrapper id="home" className="container flexSpaceCenter" key={index}>
+      {headers?.map((element, index) => {
+        if (!element.visibility) return null;
+        return (
+          <Wrapper
+            id="home"
+            className="container flexSpaceCenter"
+            key={element._id || index}
+          >
             <LeftSide className="flexCenter">
               <div>
-                <h1 className="extraBold font60"> {element.title} </h1>
+                <h1 className="extraBold font60">{element.title}</h1>
                 <HeaderP className="font13 semiBold">
                   {element.paragraph}
                 </HeaderP>
-                <BtnWrapper>
-                  <FullButton title="Get Started" />
-                </BtnWrapper>
+                <Link to="contact">
+                  <BtnWrapper>
+                    <FullButton title="Get Started" />
+                  </BtnWrapper>
+                </Link>
               </div>
             </LeftSide>
             <RightSide>
               <ImageWrapper>
                 <Img
                   className="radius8"
-                  src={element.image || null}
+                  src={element.image || ""}
                   alt="office"
                   style={{ zIndex: 9 }}
                 />
-                <QuoteWrapper className="flexCenter darkBg radius8">
-                  <QuotesWrapper>
-                    <QuotesIcon />
-                  </QuotesWrapper>
-                  {testimonialsSections &&
-                    testimonialsSections.map((section, sectionIdx) => {
+
+                {/* Only show QuoteWrapper if at least one testimonial is visible */}
+                {testimonialsSections?.some(
+                  (section) => section.visibility
+                ) && (
+                  <QuoteWrapper className="flexCenter darkBg radius8">
+                    <QuotesWrapper>
+                      <QuotesIcon />
+                    </QuotesWrapper>
+                    {testimonialsSections.map((section, sectionIdx) => {
+                      if (!section.visibility) return null;
                       const testimonial = section.testimonials[0];
                       return (
                         <div key={section._id || sectionIdx}>
@@ -65,7 +78,9 @@ export default function Header() {
                         </div>
                       );
                     })}
-                </QuoteWrapper>
+                  </QuoteWrapper>
+                )}
+
                 <DotsWrapper>
                   <Dots />
                 </DotsWrapper>
@@ -73,7 +88,8 @@ export default function Header() {
               <GreyDiv className="lightBg"></GreyDiv>
             </RightSide>
           </Wrapper>
-        ))}
+        );
+      })}
     </>
   );
 }

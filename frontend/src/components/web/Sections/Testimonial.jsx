@@ -8,26 +8,30 @@ const Testimonial = () => {
 
   useEffect(() => {
     fetchTestimonialsSections();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchTestimonialsSections]);
 
   return (
-    <Wrapper>
-      <div className="whiteBg">
-        <div style={{ padding: "50px 0" }}>
-          <div className="container">
-            {testimonialsSections.filter((element) => element.visibility).map((section) => (
-              <HeaderInfo key={section._id}>
-                <h1 className="font40 extraBold">{section.sectionTitle}</h1>
-                <p className="font13" style={{maxWidth:"700px"}}>{section.sectionDescription}</p>
-
-                <TestimonialSlider testimonials={section.testimonials} />
-              </HeaderInfo>
-            ))}
+    <>
+      {testimonialsSections?.some((element) => element.visibility) && (
+        <Wrapper>
+          <div className="whiteBg">
+            <div style={{ padding: "50px 0" }}>
+              <div className="container">
+                {testimonialsSections.map((section) => (
+                  <HeaderInfo key={section._id}>
+                    <h1 className="font40 extraBold">{section.sectionTitle}</h1>
+                    <p className="font13" style={{ maxWidth: "700px" }}>
+                      {section.sectionDescription}
+                    </p>
+                    <TestimonialSlider testimonials={section.testimonials} />
+                  </HeaderInfo>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </Wrapper>
+        </Wrapper>
+      )}
+    </>
   );
 };
 

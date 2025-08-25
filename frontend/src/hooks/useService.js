@@ -125,6 +125,77 @@ const useServices = () => {
       return false;
     }
   };
+
+  // ----------------- Service Details CRUD -----------------
+  const getServiceDetails = async (sectionId, itemId) => {
+    try {
+      const res = await axios.get(
+        ServiceApi.getServiceDetails(sectionId, itemId)
+      );
+      if (res.data.success) return res.data.data;
+      return null;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  };
+
+  const addServiceItemDetails = async (sectionId, itemId, details) => {
+    try {
+      const res = await axios.post(
+        ServiceApi.addServiceDetails(sectionId, itemId),
+        details
+      );
+      if (res.data.success) {
+        setServicesSections((prev) =>
+          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+        );
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
+  const updateServiceItemDetails = async (sectionId, itemId, details) => {
+    try {
+      const res = await axios.put(
+        ServiceApi.updateServiceDetails(sectionId, itemId),
+        details
+      );
+      if (res.data.success) {
+        setServicesSections((prev) =>
+          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+        );
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
+  const removeServiceItemDetails = async (sectionId, itemId) => {
+    try {
+      const res = await axios.delete(
+        ServiceApi.removeServiceDetails(sectionId, itemId)
+      );
+      if (res.data.success) {
+        setServicesSections((prev) =>
+          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+        );
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
   return {
     servicesSections,
     fetchServiceSections,
@@ -134,6 +205,10 @@ const useServices = () => {
     addServiceItem,
     updateServiceItem,
     removeServiceItem,
+    getServiceDetails,
+    addServiceItemDetails,
+    updateServiceItemDetails,
+    removeServiceItemDetails,
   };
 };
 

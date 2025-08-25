@@ -64,87 +64,81 @@ export default function Services() {
   };
 
   return (
-    <Wrapper id="services">
-      <div className="whiteBg" style={{ padding: "60px 0" }}>
-        {servicesSections
-          .filter((element) => element.visibility)
-          .map((section, sectionIdx) => (
-            <div className="container" key={sectionIdx || section._id}>
-              <HeaderInfo>
-                <h1 className="font40 extraBold">{section.sectionTitle}</h1>
-                <p className="font13" style={{ maxWidth: "700px" }}>
-                  {section.sectionDescription}
-                </p>
-              </HeaderInfo>
+    <>
+      {servicesSections?.some((element) => element.visibility) && (
+        <Wrapper id="services">
+          <div className="whiteBg" style={{ padding: "60px 0" }}>
+            {servicesSections.map((section, sectionIdx) => {
+              if (!section.visibility) return null; // skip hidden sections
+              return (
+                <div className="container" key={section._id || sectionIdx}>
+                  <HeaderInfo>
+                    <h1 className="font40 extraBold">{section.sectionTitle}</h1>
+                    <p className="font13" style={{ maxWidth: "700px" }}>
+                      {section.sectionDescription}
+                    </p>
+                  </HeaderInfo>
 
-              <ServiceBoxRow className="flex">
-                {section.services.map((item, itemIdx) => (
-                  <ServiceBoxWrapper key={itemIdx || item._id}>
-                    <ClickableServiceBox
-                      onClick={() => handleServiceClick(item)}
-                    >
-                      <ServiceBox
-                        icon={item.icon}
-                        title={item.title}
-                        subtitle={item.paragraph}
-                      />
-                    </ClickableServiceBox>
-                  </ServiceBoxWrapper>
-                ))}
-              </ServiceBoxRow>
-            </div>
-          ))}
-      </div>
+                  <ServiceBoxRow className="flex">
+                    {section.services.map((item, itemIdx) => (
+                      <ServiceBoxWrapper key={item._id || itemIdx}>
+                        <ClickableServiceBox
+                          onClick={() => handleServiceClick(item)}
+                        >
+                          <ServiceBox
+                            icon={item.icon}
+                            title={item.title}
+                            subtitle={item.paragraph}
+                          />
+                        </ClickableServiceBox>
+                      </ServiceBoxWrapper>
+                    ))}
+                  </ServiceBoxRow>
+                </div>
+              );
+            })}
+          </div>
 
-      {/* Modal */}
-      <ModalOverlay visible={modalVisible} onClick={closeModal}>
-        <ModalContent onClick={(e) => e.stopPropagation()}>
-          <CloseButton onClick={closeModal}>&times;</CloseButton>
-          {selectedService && (
-            <div className="lightBg">
-              <Advertising className="flexSpaceCenter">
-                <AddLeft>
-                  <AddLeftInner>
-                    <ImgWrapper className="flexCenter">
-                      <img className="radius8" src={AddImage2} alt="add" />
-                    </ImgWrapper>
-                  </AddLeftInner>
-                </AddLeft>
-                <AddRight>
-                  <h4 className="font15 semiBold">A few words about service</h4>
-                  <h2 className="font40 extraBold">A Study of Creativity</h2>
-                  <p className="font12">
-                    What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the
-                    printing and typesetting industry. Lorem Ipsum has been the
-                    industry's standard dummy text ever since the 1500s, when an
-                    unknown printer took a galley of type and scrambled it to
-                    make a type specimen book. It has survived not only five
-                    centuries, but also the leap into electronic typesetting,
-                    remaining essentially unchanged. It was popularised in the
-                    1960s with the release of Letraset sheets containing Lorem
-                    Ipsum passages, and more recently with desktop publishing
-                    software like Aldus PageMaker including versions of Lorem
-                    Ipsum.
+          {/* Modal */}
+          <ModalOverlay visible={modalVisible} onClick={closeModal}>
+            <ModalContent onClick={(e) => e.stopPropagation()}>
+              <CloseButton onClick={closeModal}>&times;</CloseButton>
+              {selectedService && (
+                <div className="lightBg">
+                  <Advertising className="flexSpaceCenter">
+                    <AddLeft>
+                      <AddLeftInner>
+                        <ImgWrapper className="flexCenter">
+                          <img
+                            className="radius8"
+                            src={selectedService.details?.media || AddImage2}
+                            alt={selectedService.title || null}
+                          />
+                        </ImgWrapper>
+                      </AddLeftInner>
+                    </AddLeft>
+                    <AddRight>
+                      <h4 className="font15 semiBold">
+                        {selectedService.details?.subHeading || null}
+                      </h4>
+                      <h2 className="font40 extraBold">
+                        {selectedService.details?.heading || null}
+                      </h2>
+                      <p className="font12">
+                        {selectedService.details?.description || null}
+                      </p>
+                    </AddRight>
+                  </Advertising>
+                  <p className="font12 p-3">
+                    {selectedService.details?.additionalInfo || null}
                   </p>
-                </AddRight>
-              </Advertising>
-              <p className="font12 p-3">
-                What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the
-                printing and typesetting industry. Lorem Ipsum has been the
-                industry's standard dummy text ever since the 1500s, when an
-                unknown printer took a galley of type and scrambled it to make a
-                type specimen book. It has survived not only five centuries, but
-                also the leap into electronic typesetting, remaining essentially
-                unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages, and more
-                recently with desktop publishing software like Aldus PageMaker
-                including versions of Lorem Ipsum.
-              </p>
-            </div>
-          )}
-        </ModalContent>
-      </ModalOverlay>
-    </Wrapper>
+                </div>
+              )}
+            </ModalContent>
+          </ModalOverlay>
+        </Wrapper>
+      )}
+    </>
   );
 }
 
@@ -175,6 +169,7 @@ const ServiceBoxWrapper = styled.div`
 const Advertising = styled.div`
   padding-top: 100px;
   margin-top: 100px;
+  margin-bottom: 50px;
   position: relative;
   @media (max-width: 1160px) {
     padding: 60px 0 40px 0;
