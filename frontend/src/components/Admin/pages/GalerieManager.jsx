@@ -163,7 +163,10 @@ const GalerieManager = () => {
                 type="text"
                 value={currentItem.identifiant || null}
                 onChange={(e) =>
-                  setCurrentItem({ ...currentItem, identifiant: e.target.value })
+                  setCurrentItem({
+                    ...currentItem,
+                    identifiant: e.target.value,
+                  })
                 }
               />
             </Form.Group>
@@ -175,6 +178,28 @@ const GalerieManager = () => {
                 accept="image/*"
                 onChange={(e) =>
                   setCurrentItem({ ...currentItem, image: e.target.files[0] })
+                }
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Width (px, optional)</Form.Label>
+              <Form.Control
+                type="number"
+                min={1}
+                value={currentItem.width || ""}
+                onChange={(e) =>
+                  setCurrentItem({ ...currentItem, width: e.target.value })
+                }
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Height (px, optional)</Form.Label>
+              <Form.Control
+                type="number"
+                min={1}
+                value={currentItem.height || ""}
+                onChange={(e) =>
+                  setCurrentItem({ ...currentItem, height: e.target.value })
                 }
               />
             </Form.Group>

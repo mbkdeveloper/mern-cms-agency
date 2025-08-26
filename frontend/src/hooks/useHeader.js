@@ -16,49 +16,40 @@ const useHeaders = () => {
     }
   };
 
-  // Add header
-  const addHeader = async (headerData) => {
-    try {
-      const formData = new FormData();
-      formData.append("title", headerData.title);
-      formData.append("paragraph", headerData.paragraph);
-      formData.append("visibility", headerData.visibility ?? true); // ✅ include visibility
-      if (headerData.image instanceof File) {
-        formData.append("image", headerData.image);
-      }
+const addHeader = async (headerData) => {
+  try {
+    const res = await axios.post(HeaderApi.addHeader, {
+      title: headerData.title,
+      paragraph: headerData.paragraph,
+      visibility: headerData.visibility ?? true,
+      image: headerData.image, // just a string now
+    });
 
-      const res = await axios.post(HeaderApi.addHeader, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setHeaders((prev) => [...(Array.isArray(prev) ? prev : []), res.data]);
-      return true;
-    } catch (err) {
-      console.error("Failed to add header:", err);
-      return false;
-    }
-  };
+    setHeaders((prev) => [...(Array.isArray(prev) ? prev : []), res.data]);
+    return true;
+  } catch (err) {
+    console.error("Failed to add header:", err);
+    return false;
+  }
+};
 
-  // Edit header
-  const editHeader = async (id, updatedData) => {
-    try {
-      const formData = new FormData();
-      formData.append("title", updatedData.title);
-      formData.append("paragraph", updatedData.paragraph);
-      formData.append("visibility", updatedData.visibility ?? true); // ✅ include visibility
-      if (updatedData.image instanceof File) {
-        formData.append("image", updatedData.image);
-      }
+const editHeader = async (id, updatedData) => {
+  try {
+    const res = await axios.put(HeaderApi.editHeader(id), {
+      title: updatedData.title,
+      paragraph: updatedData.paragraph,
+      visibility: updatedData.visibility ?? true,
+      image: updatedData.image, // just a string now
+    });
 
-      const res = await axios.put(HeaderApi.editHeader(id), formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setHeaders((prev) => prev.map((h) => (h._id === id ? res.data : h)));
-      return true;
-    } catch (err) {
-      console.error("Failed to edit header:", err);
-      return false;
-    }
-  };
+    setHeaders((prev) => prev.map((h) => (h._id === id ? res.data : h)));
+    return true;
+  } catch (err) {
+    console.error("Failed to edit header:", err);
+    return false;
+  }
+};
+
 
   // Delete header
   const deleteHeader = async (id) => {

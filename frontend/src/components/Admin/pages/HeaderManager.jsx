@@ -11,8 +11,8 @@ import {
 import { HeaderContext } from "./../../../context/HeaderContext";
 
 const HeaderManager = () => {
-const { headers, fetchHeaders, addHeader, editHeader, deleteHeader } = useContext(HeaderContext);
-
+  const { headers, fetchHeaders, addHeader, editHeader, deleteHeader } =
+    useContext(HeaderContext);
 
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -65,14 +65,10 @@ const { headers, fetchHeaders, addHeader, editHeader, deleteHeader } = useContex
     setShowPreview(true);
   };
 
-  const handleFileChange = (e) => {
-    setCurrentItem({ ...currentItem, image: e.target.files[0] });
+  const toggleVisibility = async (item) => {
+    await editHeader(item._id, { ...item, visibility: !item.visibility });
+    await fetchHeaders();
   };
-
-const toggleVisibility = async (item) => {
-  await editHeader(item._id, { ...item, visibility: !item.visibility });
-  await fetchHeaders();
-};
 
   return (
     <div className="p-3">
@@ -91,7 +87,7 @@ const toggleVisibility = async (item) => {
               <div style={{ display: "flex", alignItems: "center" }}>
                 {item.image && (
                   <Image
-                    src={item.image}
+                    src={item.image || null}
                     alt={item.title}
                     thumbnail
                     width={80}
@@ -176,12 +172,15 @@ const toggleVisibility = async (item) => {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="headerImage">
-              <Form.Label>Image</Form.Label>
+              <Form.Label>Image URL</Form.Label>
               <Form.Control
-                type="file"
+                type="text"
                 name="image"
-                accept="image/*"
-                onChange={handleFileChange}
+                value={currentItem.image}
+                onChange={(e) =>
+                  setCurrentItem({ ...currentItem, image: e.target.value })
+                }
+                placeholder="Enter image URL (optional)"
               />
             </Form.Group>
           </Form>

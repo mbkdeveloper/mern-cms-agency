@@ -1,7 +1,4 @@
 import headerModel from "../models/headerModel.js";
-import fs from "fs";
-import sharp from "sharp";
-import path from "path";
 
 // List all headers
 const listHeaders = async (req, res) => {
@@ -14,34 +11,14 @@ const listHeaders = async (req, res) => {
   }
 };
 
-// Helper to resize + compress image
-const resizeAndCompressImage = async (filePath) => {
-  const tempPath = filePath + "_tmp";
-
-  await sharp(filePath)
-    .resize(426, 607, { fit: "cover" })
-    .jpeg({ quality: 80 }) 
-    .toFile(tempPath);
-
-  fs.renameSync(tempPath, filePath);
-};
-
 // Add header
 const addHeader = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: "Image is required" });
-    }
-
-    const filePath = path.join("uploads", req.file.filename);
-    await resizeAndCompressImage(filePath);
-
-    const image = `/uploads/${req.file.filename}`;
     const header = new headerModel({
       title: req.body.title,
       paragraph: req.body.paragraph,
-      image: image,
-      visibility: req.body.visibility !== undefined ? req.body.visibility : true, // ✅ default true
+      image: req.body.image || "", // just a text field
+      visibility: req.body.visibility !== undefined ? req.body.visibility : true,
     });
 
     await header.save();
@@ -62,26 +39,10 @@ const editHeader = async (req, res) => {
       return res.status(404).json({ success: false, message: "Header not found" });
     }
 
-    if (req.file) {
-      // Remove old image
-      if (header.image) {
-        const oldImagePath = header.image.startsWith("/uploads/")
-          ? header.image.substring(1)
-          : header.image;
-        fs.unlink(oldImagePath, (err) => {
-          if (err) console.error("Error deleting old image:", err);
-        });
-      }
-
-      const filePath = path.join("uploads", req.file.filename);
-      await resizeAndCompressImage(filePath);
-
-      header.image = `/uploads/${req.file.filename}`;
-    }
-
     if (req.body.title !== undefined) header.title = req.body.title;
     if (req.body.paragraph !== undefined) header.paragraph = req.body.paragraph;
-    if (req.body.visibility !== undefined) header.visibility = req.body.visibility; 
+    if (req.body.image !== undefined) header.image = req.body.image;
+    if (req.body.visibility !== undefined) header.visibility = req.body.visibility;
 
     await header.save();
     res.status(200).json({ success: true, message: "Header updated", data: header });
@@ -94,19 +55,7 @@ const editHeader = async (req, res) => {
 // Remove header
 const removeHeader = async (req, res) => {
   try {
-    const id = req.params.id;
-    const header = await headerModel.findById(id);
-
-    if (header?.image) {
-      const oldImagePath = header.image.startsWith("/uploads/")
-        ? header.image.substring(1)
-        : header.image;
-      fs.unlink(oldImagePath, (err) => {
-        if (err) console.error("Error deleting image:", err);
-      });
-    }
-
-    await headerModel.findByIdAndDelete(id);
+    await headerModel.findByIdAndDelete(req.params.id);
     res.status(200).json({ success: true, message: "Header removed" });
   } catch (error) {
     console.error("Error removing header:", error);
@@ -115,3 +64,17 @@ const removeHeader = async (req, res) => {
 };
 
 export { listHeaders, addHeader, editHeader, removeHeader };
+
+
+
+// Helper to resize + compress image
+// const resizeAndCompressImage = async (filePath) => {
+//   const tempPath = filePath + "_tmp";
+
+//   await sharp(filePath)
+//     .resize(426, 607, { fit: "cover" })
+//     .jpeg({ quality: 80 }) 
+//     .toFile(tempPath);
+
+//   fs.renameSync(tempPath, filePath);
+// };
