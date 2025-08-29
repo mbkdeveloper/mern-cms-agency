@@ -54,8 +54,10 @@ export default function Services() {
   }, [fetchServiceSections]);
 
   const handleServiceClick = (service) => {
-    setSelectedService(service);
-    setModalVisible(true);
+    if (service.details) {
+      setSelectedService(service);
+      setModalVisible(true);
+    }
   };
 
   const closeModal = () => {

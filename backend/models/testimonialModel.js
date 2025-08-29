@@ -22,7 +22,7 @@ const testimonialsSectionSchema = new mongoose.Schema({
   },
   visibility: {
     type: Boolean,
-    default: true 
+    default: false 
   },
   testimonials: [testimonialItemSchema]
 });

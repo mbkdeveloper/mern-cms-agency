@@ -54,7 +54,7 @@ const ServicesManager = () => {
     if (sectionIdx === null) {
       setEditingSection({
         sectionIdx: null,
-        data: { sectionTitle: "", sectionDescription: "", visibility: true },
+        data: { sectionTitle: "", sectionDescription: "", visibility: false },
       });
     } else {
       const sec = servicesSections[sectionIdx];
@@ -385,20 +385,6 @@ const ServicesManager = () => {
                         ...prev.data,
                         sectionDescription: e.target.value,
                       },
-                    }))
-                  }
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Check
-                  type="switch"
-                  id="visibility-switch"
-                  label="Visible"
-                  checked={editingSection.data.visibility}
-                  onChange={(e) =>
-                    setEditingSection((prev) => ({
-                      ...prev,
-                      data: { ...prev.data, visibility: e.target.checked },
                     }))
                   }
                 />

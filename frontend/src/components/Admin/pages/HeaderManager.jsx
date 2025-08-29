@@ -21,7 +21,7 @@ const HeaderManager = () => {
     title: "",
     paragraph: "",
     image: "",
-    visibility: true,
+    visibility: false,
   });
   const [showPreview, setShowPreview] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
@@ -35,7 +35,7 @@ const HeaderManager = () => {
 
   const handleAdd = () => {
     setIsEdit(false);
-    setCurrentItem({ title: "", paragraph: "", image: "", visibility: true });
+    setCurrentItem({ title: "", paragraph: "", image: "", visibility: false });
     setShowModal(true);
   };
 

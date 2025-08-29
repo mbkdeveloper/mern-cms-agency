@@ -20,7 +20,7 @@ const Navbar = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [userProfile]);
 
   // ✅ Fonction logout appelée depuis StoreContext
   const handleLogout = async () => {

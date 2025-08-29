@@ -33,7 +33,7 @@ const TestimonialManager = () => {
       idx,
       data:
         idx === null
-          ? { sectionTitle: "", sectionDescription: "", visibility: true } // ✅ default visible
+          ? { sectionTitle: "", sectionDescription: "", visibility: false } // ✅ default visible
           : {
               sectionTitle: testimonialsSections[idx].sectionTitle,
               sectionDescription: testimonialsSections[idx].sectionDescription,
@@ -80,7 +80,7 @@ const TestimonialManager = () => {
       itemIdx,
       data:
         itemIdx === null
-          ? { writer: "", paragraph: "", visibility: true } // ✅ default visible
+          ? { writer: "", paragraph: "", visibility: false } // ✅ default visible
           : {
               writer:
                 testimonialsSections[sectionIdx].testimonials[itemIdx].writer,

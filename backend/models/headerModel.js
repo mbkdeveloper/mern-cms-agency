@@ -6,7 +6,7 @@ const headerSchema = new mongoose.Schema(
     paragraph: { type: String, required: true },
     visibility: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     image: { type: String, required: true },
   },

@@ -20,22 +20,53 @@ export default function Contact() {
           <div className="row" style={{ paddingBottom: "30px" }}>
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
               <Form id="contactForm" onSubmit={handleSubmit(onSubmit)}>
-                <label className="font13">Full name:</label>
-                <input type="text" {...register("name")} className="font20" />
+                <label htmlFor="fname" className="font13">
+                  Full name:
+                </label>
+                <input
+                  type="text"
+                  {...register("name")}
+                  className="font20"
+                  id="fname"
+                  autoComplete="given-name"
+                />
                 {errors.name && <ErrorMsg>{errors.name.message}</ErrorMsg>}
 
-                <label className="font13">Email:</label>
-                <input type="email" {...register("email")} className="font20" />
+                <label htmlFor="email" className="font13">
+                  Email:
+                </label>
+                <input
+                  type="email"
+                  {...register("email")}
+                  className="font20"
+                  id="email"
+                  autoComplete="email"
+                />
                 {errors.email && <ErrorMsg>{errors.email.message}</ErrorMsg>}
 
-                <label className="font13">Subject:</label>
-                <input type="text" {...register("subject")} className="font20" />
+                <label htmlFor="subject" className="font13">
+                  Subject:
+                </label>
+                <input
+                  type="text"
+                  {...register("subject")}
+                  className="font20"
+                  id="subject"
+                  autoComplete="off"
+                />
                 {errors.subject && (
                   <ErrorMsg>{errors.subject.message}</ErrorMsg>
                 )}
 
-                <label className="font13">Message:</label>
-                <textarea {...register("message")} className="font20" />
+                <label htmlFor="message" className="font13">
+                  Message:
+                </label>
+                <textarea
+                  {...register("message")}
+                  className="font20"
+                  id="message"
+                  autoComplete="off"
+                />
                 {errors.message && (
                   <ErrorMsg>{errors.message.message}</ErrorMsg>
                 )}
@@ -64,11 +95,11 @@ export default function Contact() {
               )}
             </div>
             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6 flex">
-                <MapFrame
-                  title="map"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3277.81099337283!2d10.7792828!3d34.760353699999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1301d294e24298a7%3A0x9b66c8f1ae65dd0b!2sINNOVATION%202!5e0!3m2!1sfr!2stn!4v1756051215082!5m2!1sfr!2stn"
-                  loading="lazy"
-                />
+              <MapFrame
+                title="map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3277.81099337283!2d10.7792828!3d34.760353699999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1301d294e24298a7%3A0x9b66c8f1ae65dd0b!2sINNOVATION%202!5e0!3m2!1sfr!2stn!4v1756051215082!5m2!1sfr!2stn"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
