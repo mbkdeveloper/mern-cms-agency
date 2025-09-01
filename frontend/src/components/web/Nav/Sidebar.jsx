@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-scroll";
 
 // Assets
 import CloseIcon from "../../../assets/svg/CloseIcon";
 import LogoIcon from "../../../assets/svg/Logo";
+import { ServiceContext } from "../../../context/ServiceContext";
+import { HeaderContext } from "../../../context/HeaderContext";
 
 export default function Sidebar({ sidebarOpen, toggleSidebar }) {
+  const { headers } = useContext(HeaderContext);
+  const { servicesSections } = useContext(ServiceContext);
   return (
     <Wrapper className="animate darkBg" $sidebarOpen={sidebarOpen}>
       <SidebarHeader className="flexSpaceCenter">
@@ -16,40 +20,76 @@ export default function Sidebar({ sidebarOpen, toggleSidebar }) {
             TN Smart IOT
           </h1>
         </div>
-        <CloseBtn onClick={() => toggleSidebar(!sidebarOpen)} className="animate pointer">
+        <CloseBtn
+          onClick={() => toggleSidebar(!sidebarOpen)}
+          className="animate pointer"
+        >
           <CloseIcon />
         </CloseBtn>
       </SidebarHeader>
 
       <UlStyle className="flexNullCenter flexColumn">
-        <li className="semiBold font15 pointer">
-          <Link
-            onClick={() => toggleSidebar(!sidebarOpen)}
-            activeClass="active"
-            className="whiteColor"
-            style={{ padding: "10px 15px" }}
-            to="home"
-            spy={true}
-            smooth={true}
-            offset={-60}
-          >
-            Home
-          </Link>
-        </li>
-        <li className="semiBold font15 pointer">
-          <Link
-            onClick={() => toggleSidebar(!sidebarOpen)}
-            activeClass="active"
-            className="whiteColor"
-            style={{ padding: "10px 15px" }}
-            to="services"
-            spy={true}
-            smooth={true}
-            offset={-60}
-          >
-            Services
-          </Link>
-        </li>
+        {headers?.map((element, index) => {
+          if (!element.visibility) return null;
+          return (
+            <li key={`header-${index}`} className="semiBold font15 pointer">
+              <Link
+                onClick={() => toggleSidebar(!sidebarOpen)}
+                activeClass="active"
+                className="whiteColor"
+                style={{ padding: "10px 15px" }}
+                to="home"
+                spy={true}
+                smooth={true}
+                offset={-60}
+              >
+                Home
+              </Link>
+            </li>
+          );
+        })}
+
+        {servicesSections?.map((section, sectionIdx) => {
+          if (!section.visibility) return null; // skip hidden sections
+          return (
+            <li
+              key={`service-${sectionIdx}`}
+              className="semiBold font15 pointer"
+            >
+              <Link
+                onClick={() => toggleSidebar(!sidebarOpen)}
+                activeClass="active"
+                className="whiteColor"
+                style={{ padding: "10px 15px" }}
+                to="services"
+                spy={true}
+                smooth={true}
+                offset={-60}
+              >
+                Services
+              </Link>
+            </li>
+          );
+        })}
+
+        {(headers?.some((h) => h.visibility) ||
+          servicesSections?.some((s) => s.visibility)) && (
+          <li className="semiBold font15 pointer">
+            <Link
+              onClick={() => toggleSidebar(!sidebarOpen)}
+              activeClass="active"
+              className="whiteColor"
+              style={{ padding: "10px 15px" }}
+              to="contact"
+              spy={true}
+              smooth={true}
+              offset={-60}
+            >
+              Contact
+            </Link>
+          </li>
+        )}
+
         {/* <li className="semiBold font15 pointer">
           <Link
             onClick={() => toggleSidebar(!sidebarOpen)}
@@ -63,49 +103,8 @@ export default function Sidebar({ sidebarOpen, toggleSidebar }) {
           >
             Projects
           </Link>
-        </li>
-        <li className="semiBold font15 pointer">
-          <Link
-            onClick={() => toggleSidebar(!sidebarOpen)}
-            activeClass="active"
-            className="whiteColor"
-            style={{ padding: "10px 15px" }}
-            to="blog"
-            spy={true}
-            smooth={true}
-            offset={-60}
-          >
-            Blog
-          </Link>
-        </li>*/} 
-        <li className="semiBold font15 pointer">
-          <Link
-            onClick={() => toggleSidebar(!sidebarOpen)}
-            activeClass="active"
-            className="whiteColor"
-            style={{ padding: "10px 15px" }}
-            to="contact"
-            spy={true}
-            smooth={true}
-            offset={-60}
-          >
-            Contact
-          </Link>
-        </li>
+        </li>*/}
       </UlStyle>
-
-      {/* <UlStyle className="flexSpaceCenter">
-        <li className="semiBold font15 pointer">
-          <a href="/" style={{ padding: "10px 30px 10px 0" }} className="whiteColor">
-            Log in
-          </a>
-        </li>
-        <li className="semiBold font15 pointer flexCenter">
-          <a href="/" className="radius8 lightBg" style={{ padding: "10px 15px" }}>
-            Get Started
-          </a>
-        </li>
-      </UlStyle> */}
     </Wrapper>
   );
 }

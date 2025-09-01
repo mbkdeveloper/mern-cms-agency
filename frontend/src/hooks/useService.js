@@ -2,14 +2,24 @@ import axios from "axios";
 import { useState } from "react";
 import { ServiceApi } from "../api/service";
 
+// helper to normalize sections
+const normalizeSections = (sections) =>
+  (sections || []).map((sec) => ({
+    ...sec,
+    services: sec.services || [], // always array
+  }));
+
 const useServices = () => {
   const [servicesSections, setServicesSections] = useState([]);
+
   // Fetch all service sections
   const fetchServiceSections = async () => {
     try {
       const res = await axios.get(ServiceApi.listServiceSections);
       if (res.data.success) {
-        setServicesSections(res.data.data || []);
+        setServicesSections(normalizeSections(res.data.data));
+      } else {
+        setServicesSections([]);
       }
     } catch (err) {
       console.error("Error fetching service sections:", err);
@@ -22,7 +32,10 @@ const useServices = () => {
     try {
       const res = await axios.post(ServiceApi.addServiceSection, newSection);
       if (res.data.success) {
-        setServicesSections((prev) => [...prev, res.data.data]);
+        setServicesSections((prev) => [
+          ...prev,
+          { ...res.data.data, services: res.data.data.services || [] },
+        ]);
         return true;
       }
       return false;
@@ -41,7 +54,11 @@ const useServices = () => {
       );
       if (res.data.success) {
         setServicesSections((prev) =>
-          prev.map((sec) => (sec._id === id ? res.data.data : sec))
+          prev.map((sec) =>
+            sec._id === id
+              ? { ...res.data.data, services: res.data.data.services || [] }
+              : sec
+          )
         );
         return true;
       }
@@ -70,13 +87,14 @@ const useServices = () => {
   // Add service item to a section
   const addServiceItem = async (sectionId, newItem) => {
     try {
-      const res = await axios.post(
-        ServiceApi.addServiceItem(sectionId),
-        newItem
-      );
+      const res = await axios.post(ServiceApi.addServiceItem(sectionId), newItem);
       if (res.data.success) {
         setServicesSections((prev) =>
-          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+          prev.map((sec) =>
+            sec._id === sectionId
+              ? { ...res.data.data, services: res.data.data.services || [] }
+              : sec
+          )
         );
         return true;
       }
@@ -96,7 +114,11 @@ const useServices = () => {
       );
       if (res.data.success) {
         setServicesSections((prev) =>
-          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+          prev.map((sec) =>
+            sec._id === sectionId
+              ? { ...res.data.data, services: res.data.data.services || [] }
+              : sec
+          )
         );
         return true;
       }
@@ -115,7 +137,11 @@ const useServices = () => {
       );
       if (res.data.success) {
         setServicesSections((prev) =>
-          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+          prev.map((sec) =>
+            sec._id === sectionId
+              ? { ...res.data.data, services: res.data.data.services || [] }
+              : sec
+          )
         );
         return true;
       }
@@ -129,9 +155,7 @@ const useServices = () => {
   // ----------------- Service Details CRUD -----------------
   const getServiceDetails = async (sectionId, itemId) => {
     try {
-      const res = await axios.get(
-        ServiceApi.getServiceDetails(sectionId, itemId)
-      );
+      const res = await axios.get(ServiceApi.getServiceDetails(sectionId, itemId));
       if (res.data.success) return res.data.data;
       return null;
     } catch (err) {
@@ -148,7 +172,11 @@ const useServices = () => {
       );
       if (res.data.success) {
         setServicesSections((prev) =>
-          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+          prev.map((sec) =>
+            sec._id === sectionId
+              ? { ...res.data.data, services: res.data.data.services || [] }
+              : sec
+          )
         );
         return true;
       }
@@ -167,7 +195,11 @@ const useServices = () => {
       );
       if (res.data.success) {
         setServicesSections((prev) =>
-          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+          prev.map((sec) =>
+            sec._id === sectionId
+              ? { ...res.data.data, services: res.data.data.services || [] }
+              : sec
+          )
         );
         return true;
       }
@@ -185,7 +217,11 @@ const useServices = () => {
       );
       if (res.data.success) {
         setServicesSections((prev) =>
-          prev.map((sec) => (sec._id === sectionId ? res.data.data : sec))
+          prev.map((sec) =>
+            sec._id === sectionId
+              ? { ...res.data.data, services: res.data.data.services || [] }
+              : sec
+          )
         );
         return true;
       }

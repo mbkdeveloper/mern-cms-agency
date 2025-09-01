@@ -17,8 +17,8 @@ const Testimonial = () => {
           <div className="whiteBg">
             <div style={{ padding: "50px 0" }}>
               <div className="container">
-                {testimonialsSections.map((section) => (
-                  <HeaderInfo key={section._id}>
+                {testimonialsSections.map((section, sectionIdx) => (
+                  <HeaderInfo key={section._id || sectionIdx}>
                     <h1 className="font40 extraBold">{section.sectionTitle}</h1>
                     <p className="font13" style={{ maxWidth: "700px" }}>
                       {section.sectionDescription}

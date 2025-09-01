@@ -34,7 +34,7 @@ export default function TestimonialSlider({ testimonials }) {
     <div>
       <Slider {...settings}>
         {testimonials.map((item, idx) => (
-          <LogoWrapper key={idx} className="flexCenter">
+          <LogoWrapper key={item._id || idx} className="flexCenter">
             <TestimonialBox text={item.paragraph} author={item.writer} />
           </LogoWrapper>
         ))}

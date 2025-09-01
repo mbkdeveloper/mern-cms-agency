@@ -1,17 +1,18 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from './../../../context/AuthContext';
-import { ClientContext } from "../../../context/ClientContext";
 
 const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { logout} = useContext(AuthContext);
-  const { userProfile } = useContext(ClientContext);
+  const { userProfile } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // Fermer dropdown quand on clique en dehors
   useEffect(() => {
+    if (userProfile) {}
+    
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);

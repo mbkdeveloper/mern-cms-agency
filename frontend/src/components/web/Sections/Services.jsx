@@ -88,6 +88,7 @@ export default function Services() {
                           onClick={() => handleServiceClick(item)}
                         >
                           <ServiceBox
+                            key={item._id || itemIdx}
                             icon={item.icon}
                             title={item.title}
                             subtitle={item.paragraph}
