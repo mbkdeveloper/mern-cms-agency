@@ -5,7 +5,7 @@ import { Link } from "react-scroll";
 import Sidebar from "./Sidebar";
 import Backdrop from "../../Elements/Backdrop";
 // Assets
-import LogoIcon from "../../../assets/svg/Logo";
+import LogoIcon from "../../../assets/img/Logo_iot";
 import BurgerIcon from "../../../assets/svg/BurgerIcon";
 import { HeaderContext } from "../../../context/HeaderContext";
 import { ServiceContext } from "../../../context/ServiceContext";

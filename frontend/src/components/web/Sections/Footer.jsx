@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-scroll";
 // Assets
-import LogoImg from "../../../assets/svg/Logo";
+import LogoImg from "../../../assets/img/Logo_iot";
 import up from "../../../assets/img/up.png";
 
 export default function Footer() {

@@ -4,7 +4,7 @@ import { Link } from "react-scroll";
 
 // Assets
 import CloseIcon from "../../../assets/svg/CloseIcon";
-import LogoIcon from "../../../assets/svg/Logo";
+import LogoIcon from "../../../assets/img/Logo_iot";
 import { ServiceContext } from "../../../context/ServiceContext";
 import { HeaderContext } from "../../../context/HeaderContext";
 
