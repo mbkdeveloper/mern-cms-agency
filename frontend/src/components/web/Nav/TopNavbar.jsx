@@ -34,9 +34,9 @@ export default function TopNavbar() {
         <NavInner className="container flexSpaceCenter">
           <Link className="pointer flexNullCenter" to="home" smooth={true}>
             <LogoIcon />
-            <h1 style={{ marginLeft: "15px" }} className="font20 extraBold">
+            {/* <h1 style={{ marginLeft: "15px" }} className="font20 extraBold">
               TN Smart IOT
-            </h1>
+            </h1> */}
           </Link>
           <BurderWrapper
             className="pointer"

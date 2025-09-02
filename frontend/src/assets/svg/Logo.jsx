@@ -1,15 +1,29 @@
-import * as React from "react";
+import LogoIot from "../../assets/img/logo_iot.png";
+import styled from "styled-components";
+import { Image } from 'react-bootstrap';
+
+const StyledLogo = styled(Image)`
+  width: 160px;
+  height: 40px;
+
+  @media (max-width: 768px) {
+    width: 100px;
+    height: 40px;
+  }
+`;
 
 function SvgComponent(props) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width={27} height={40} viewBox="0 0 27 40" {...props}>
-      <g data-name="Group 101" transform="translate(-375 -21)">
-        <rect data-name="Rectangle 16" width={13} height={8} rx={4} transform="translate(375 53)" fill="#f40051" />
-        <rect data-name="Rectangle 11" width={20} height={8} rx={4} transform="translate(382 21)" fill="#f2b300" />
-        <rect data-name="Rectangle 15" width={20} height={8} rx={4} transform="translate(382 37)" fill="#7620ff" />
-        <rect data-name="Rectangle 12" width={8} height={8} rx={4} transform="translate(375 29)" fill="#4cd5c5" />
-      </g>
-    </svg>
+    <StyledLogo src={LogoIot} alt="LogoIot" />
+
+    // <svg xmlns="http://www.w3.org/2000/svg" width={27} height={40} viewBox="0 0 27 40" {...props}>
+    //   <g data-name="Group 101" transform="translate(-375 -21)">
+    //     <rect data-name="Rectangle 16" width={13} height={8} rx={4} transform="translate(375 53)" fill="#f40051" />
+    //     <rect data-name="Rectangle 11" width={20} height={8} rx={4} transform="translate(382 21)" fill="#f2b300" />
+    //     <rect data-name="Rectangle 15" width={20} height={8} rx={4} transform="translate(382 37)" fill="#7620ff" />
+    //     <rect data-name="Rectangle 12" width={8} height={8} rx={4} transform="translate(375 29)" fill="#4cd5c5" />
+    //   </g>
+    // </svg>
   );
 }
 
